@@ -98,23 +98,34 @@ def searchQuestionsContainingWord(questions_list, keyword):
     """
     return filter(lambda question: question[CONTENT].find(keyword) >= 0, questions_list)
     
-def modify(questions_list, question_index, column_index, text):
+def modify(question, column_index, text):
     """
         Exercise 7
     """
-    questions_list[question_index][column_index] = text
+    question[column_index] = text
 
-def modify_2(questions_dictionary, question_content, column_index, text):
+
+def addTag(question, newtag):
+    """
+        Exercise 7
+    """
+    current_tags = question[TAGS].split(TAG_DELIMITOR)
+    if newtag not in current_tags:
+        current_tags.append(newtag)
+        if current_tags[0] == '-':
+            current_tags = current_tags[1:]
+    question[TAGS] = TAG_DELIMITOR.join(current_tags)
+    #Or modify(question, TAG_DELIMITOR.join(current_tags))
+
+def saveDatabaseToFile(questions_list, newfilename):
     """
         Exercise 8
     """
-    question = questions_dictionary[hash(question_content)]
-    if column_index == CONTENT:
-        questions_dictionary[hash(question[CONTENT])] = None
-        questions_dictionary[hash(text)] = question
-        question[column_index] = text
-    else:
-        question[column_index] = text
+    myfile = open(newfilename, 'w')
+    for question in questions_list:
+        myfile.write("\t".join(question))
+        myfile.write("\n")
+    myfile.close()
 
 def generateRandomQuestion(questions_list):
     """
@@ -123,20 +134,20 @@ def generateRandomQuestion(questions_list):
     import random
     random_index = random.randint(0, len(questions_list) - 1)
     return questions_list[random_index]
-    
-def generateRandomQuestion_2(questions_dictionary):
+
+
+def generateRandomQuestionList(questions_list, nb_questions):
     """
         Exercise 10
-    """
-    import random
-    random_index = random.randint(0, len(questions_dictionary) - 1)
-    return questions_dictionary[questions_dictionary.keys()[random_index]]
-    
-def getCorrection(question):
-    """
-        Exercise 11
-    """
-    return question[CORRECTION]
+    """ 
+    if nb_questions > len(questions_list):
+        nb_questions = len(questions_list)
+    my_shuffle = range(len(questions_list))
+    random.shuffle(my_shuffle)
+    chosen_questions_list = []
+    for i in range(nb_questions):
+        chosen_questions_list.append(questions_list[my_shuffle[i]])
+    return my_shuffle[:nb_questions], chosen_questions_list
 
 def isCorrectAnswer(question, answer):
     """
@@ -147,22 +158,9 @@ def isCorrectAnswer(question, answer):
     
 #---------------------PART 2 - A MULTIPLE CHOICE GAME---------------------------------
 
-def generateRandomQuestionList(filename, nb_questions):
-    """
-        Exercise 12
-    """
-    lines = readQuestionFileAsLines(filename)
-    questions_list = parseQuestionsAsListOfList(lines)  
-    my_shuffle = range(len(questions_list))
-    random.shuffle(my_shuffle)
-    chosen_questions_list = []
-    for i in range(nb_questions):
-        chosen_questions_list.append(questions_list[my_shuffle[i]])
-    return my_shuffle[:nb_questions], chosen_questions_list
-
 def isGoodChoice(indices_1, indices_2, ceil):
     """
-        Exercise 13
+        Exercise 12
     """
     return len(set(indices_1) & set(indices_2)) <= ceil
 
@@ -172,7 +170,9 @@ def generateHistoryTest():
         Do not modify this function
     """
     nb_questions = raw_input("Please choose the number of question: ")
-    questions_list = generateRandomQuestionList(DATAFILE, int(nb_questions))[1]
+    lines = readQuestionFileAsLines(DATAFILE)
+    questions_list_raw = parseQuestionsAsListOfList(lines)  
+    questions_list = generateRandomQuestionList(questions_list_raw, int(nb_questions))[1]
     score = 0
     for question in questions_list:
         print(question[CONTENT])
@@ -188,20 +188,22 @@ def generateHistoryTest():
     
 def generateRepeatedHistoryTest():
     """
-        Exercise 14
+        Exercise 13
     """
     all_indices = set([])
     nb_questions = raw_input("Please choose the number of question: ")
+    lines = readQuestionFileAsLines(DATAFILE)
+    questions_list_raw = parseQuestionsAsListOfList(lines)  
     want_to_continue = True
     max_score = 0
     database_expired = False
-    while want_to_continue and not database_expired: 
-        questions_list_with_indices = generateRandomQuestionList(DATAFILE, int(nb_questions))
+    while want_to_continue and not database_expired:
+        questions_list_with_indices = generateRandomQuestionList(questions_list_raw, int(nb_questions))
         indices, questions_list = questions_list_with_indices[0], questions_list_with_indices[1]
         
         nb_tries = 0
         while nb_tries < 50 and not isGoodChoice(indices, all_indices, int(nb_questions)/3):
-            questions_list_with_indices = generateRandomQuestionList(DATAFILE, int(nb_questions))
+            questions_list_with_indices = generateRandomQuestionList(questions_list_raw, int(nb_questions))
             indices, questions_list = questions_list_with_indices[0], questions_list_with_indices[1]
             nb_tries += 1
         
@@ -239,27 +241,6 @@ def generateRepeatedHistoryTest():
             return
 
 #---------------------PART 3 - APPLICATION TO ADD TAGS---------------------------------
-
-def addTag(question, newtag):
-    """
-        Exercise 15
-    """
-    current_tags = question[TAGS].split(TAG_DELIMITOR)
-    if newtag not in current_tags:
-        current_tags.append(newtag)
-        if current_tags[0] == '-':
-            current_tags = current_tags[1:]
-    question[TAGS] = TAG_DELIMITOR.join(current_tags)
-
-def saveDatabaseToFile(questions_list, newfilename):
-    """
-        Exercise 16
-    """
-    myfile = open(newfilename, 'w')
-    for question in questions_list:
-        myfile.write("\t".join(question))
-        myfile.write("\n")
-    myfile.close()
 
 def generateTagUpdateApplication():
     lines = readQuestionFileAsLines(DATAFILE)
