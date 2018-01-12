@@ -77,6 +77,9 @@ text = readQuestionFileAsString("QCM.csv")
 print(len(text))
 ```
 
+    16812
+    
+
 *(2) Hãy viết tiếp hàm **readQuestionFileAsLines(filename)** nhận đối số **filename** là tên (đường dẫn) của file dữ liệu, và trả lại một **list** các **str**, mỗi **str** là một hàng trong file dữ liệu, chứa cả kí tự chuyển hàng "\n" nếu có.*
 
 Gợi ý: Sau khi viết, tự test bằng đoạn code dưới đây.
@@ -89,6 +92,12 @@ print(lines[76])
 print("\n" in lines[0]) #Should be True
 ```
 
+    TG	1	1	Người tối cổ xuất hiện trên Trái Đất vào niên đại nào?	2.000.000.000 năm trước	80.000.000 năm trước	6.000.000 năm trước	400.000 năm trước	C	M	-	-
+    
+    VN	3	77	Năm 1866, "không tốn một viên đạn", thực dân Pháp đã lấy được 3 tỉnh nào của nước ta?	Gia Định, Định Tường, Biên Hoà	Nam Định, Hà Nam, Kinh Bắc	Thanh Hoá, Nghệ An, Hà Tĩnh	Vĩnh Long, An Giang, Hà Tiên	D	H	-	-
+    True
+    
+
 *(3) Hãy viết tiếp hàm **readQuestionFileAsCleanLines(filename)** nhận đối số **filename** là tên (đường dẫn) của file dữ liệu, và trả lại một **list** các **str**, mỗi **str** là một hàng trong file dữ liệu, nhưng lần này xoá bỏ tất cả các kí tự chuyển hàng "\n" nếu có.*
 
 Gợi ý: Sau khi viết, tự test bằng đoạn code dưới đây.
@@ -100,6 +109,11 @@ print(lines[0])
 print(lines[76])
 print("\n" in lines[0]) #Should be False
 ```
+
+    TG	1	1	Người tối cổ xuất hiện trên Trái Đất vào niên đại nào?	2.000.000.000 năm trước	80.000.000 năm trước	6.000.000 năm trước	400.000 năm trước	C	M	-	-
+    VN	3	77	Năm 1866, "không tốn một viên đạn", thực dân Pháp đã lấy được 3 tỉnh nào của nước ta?	Gia Định, Định Tường, Biên Hoà	Nam Định, Hà Nam, Kinh Bắc	Thanh Hoá, Nghệ An, Hà Tĩnh	Vĩnh Long, An Giang, Hà Tiên	D	H	-	-
+    False
+    
 
 ### Bài 2 - Biểu diễn dữ liệu bằng list của list
 Sau khi hoàn thành bài 1.(3), ta đã có một **list** các **str**, mỗi **str** tương ứng với một câu hỏi. Biểu diễn này chưa tốt vì chưa cho phép ta làm việc với từng thành phần của mỗi câu hỏi. Để tiếp cận mỗi thành phần, ta sẽ biểu diễn các **str** này thành các list có độ dài 12, tương ứng với 12 thành phần của câu hỏi.
@@ -116,6 +130,10 @@ print(questions[48][3])
 print(questions[48][5])
 ```
 
+    Quốc hiệu nước ta dưới thời Lý Nam Đế là gì?
+    Vạn Xuân
+    
+
 ### Bài 3 - Tìm đáp án của câu hỏi
 
 Giả sử ta có tình huống như sau: biết nội dung của câu hỏi và cần tìm đáp án của nó dưới dạng tự luận (tức là đáp án hiển thị một cách rõ ràng chứ không chỉ là một kí tự A, B, C, D).
@@ -131,6 +149,9 @@ questions = parseQuestionsAsListOfList(lines)
 print(answer(questions, "Quốc hiệu nước ta dưới thời Lý Nam Đế là gì?"))
 ```
 
+    Vạn Xuân
+    
+
 **Hiểu thêm: ** Ta có thể tìm tốc độ tìm kiếm bằng cách cho hàm chạy 10000 lần và xem thời gian cần thiết để đưa ra kết quả trung bình là bao nhiêu.
 
 
@@ -144,6 +165,9 @@ for i in range(10000):
 end = time.time() #Get current time
 print("Find the answer using list of list took " + str(end - begin) + " seconds")
 ```
+
+    Find the answer using list of list took 0.108000040054 seconds
+    
 
 ### Bài 4 - Thử một cách biểu diễn dữ liệu khác, dùng từ điển
 
@@ -162,6 +186,10 @@ print(A)
 print(questions[hash(A)])
 ```
 
+    -520583810
+    ['VN', '1', '49', 'Qu\xe1\xbb\x91c hi\xe1\xbb\x87u n\xc6\xb0\xe1\xbb\x9bc ta d\xc6\xb0\xe1\xbb\x9bi th\xe1\xbb\x9di L\xc3\xbd Nam \xc4\x90\xe1\xba\xbf l\xc3\xa0 g\xc3\xac?', '\xc3\x82u L\xe1\xba\xa1c', 'V\xe1\xba\xa1n Xu\xc3\xa2n', '\xc4\x90\xe1\xba\xa1i C\xe1\xbb\x93 Vi\xe1\xbb\x87t', '\xc4\x90\xe1\xba\xa1i Vi\xe1\xbb\x87t', 'B', 'E', '-', '-']
+    
+
 ### Bài 5 - Tìm đáp án với biểu diễn dữ liệu bằng từ điển
 
 Cùng một tình huống với bài 3, ta muốn tìm câu trả lời cho một câu hỏi bằng cách dùng từ điển đã viết ở bài 4.
@@ -177,6 +205,9 @@ questions = parseQuestionsAsDictionary(lines)
 print(answer_2(questions, "Quốc hiệu nước ta dưới thời Lý Nam Đế là gì?"))
 ```
 
+    Vạn Xuân
+    
+
 **Hiểu thêm**: Ta thử tìm kiếm 10000 lần bằng phương pháp dùng từ điển.
 
 
@@ -190,6 +221,9 @@ for i in range(10000):
 end = time.time() #Get current time
 print("Find the answer using dict of list took " + str(end - begin) + " seconds")
 ```
+
+    Find the answer using dict of list took 0.0090000629425 seconds
+    
 
 So sánh với phương pháp dùng **list**, kết quả như thế nào? Sự bất cẩn của phương pháp thứ hai này là gì?
 
@@ -215,6 +249,11 @@ print(S[0])
 print(S[0][CONTENT]) #CONTENT = 3
 ```
 
+    5
+    ['VN', '1', '26', 'Nh\xc3\xa2n v\xe1\xba\xadt l\xe1\xbb\x8bch s\xe1\xbb\xad n\xc3\xa0o ch\xe1\xbb\x91ng l\xe1\xba\xa1i qu\xc3\xa2n x\xc3\xa2m l\xc6\xb0\xe1\xbb\xa3c Tr\xe1\xba\xa7n (Trung Qu\xe1\xbb\x91c), gi\xe1\xbb\xaf v\xe1\xbb\xafng \xc4\x91\xe1\xbb\x99c l\xe1\xba\xadp t\xe1\xba\xa1m th\xe1\xbb\x9di c\xe1\xbb\xa7a d\xc3\xa2n t\xe1\xbb\x99c?', '\xc4\x90inh Ki\xe1\xba\xbfn, L\xc3\xbd T\xe1\xbb\xb1 Ti\xc3\xaan (th\xe1\xba\xbf k\xe1\xbb\x89 VII)', 'D\xc6\xb0\xc6\xa1ng Thanh (th\xe1\xba\xbf k\xe1\xbb\x89 IX)', 'L\xc3\xbd Ph\xe1\xba\xadt T\xe1\xbb\xad (th\xe1\xba\xbf k\xe1\xbb\x89 VI, VII)', 'Tri\xe1\xbb\x87u Quang Ph\xe1\xbb\xa5c (th\xe1\xba\xbf k\xe1\xbb\x89 VI)', 'D', 'H', '-', '-']
+    Nhân vật lịch sử nào chống lại quân xâm lược Trần (Trung Quốc), giữ vững độc lập tạm thời của dân tộc?
+    
+
 ### Bài 7 - Cập nhật một thành phần của câu hỏi
 
 Cũng trong ứng dụng 2, ta cần sửa chữa một câu hỏi (ví dụ: thêm hashtag ở cột 10).
@@ -232,6 +271,11 @@ modify(questions[12], CONTENT, "Thời nào của Trung Quốc cổ đại đư�
 print("Updated!")
 print(questions[12][CONTENT])
 ```
+
+    Xuân Thu và Chiến Quốc là hai giai đoạn của thời kì nào sau đây của Trung Quốc cổ đại?
+    Updated!
+    Thời nào của Trung Quốc cổ đại được chia thành Xuân Thu và Chiến Quốc?
+    
 
 *Hãy viết hàm **addTag(question, newtag)** nhận đối số **question** là một câu hỏi (tức một **list** 12 thành phần) và **newtag** là một hashtag mới cần thêm vào ở cột có chỉ số 10, và thực hiện việc thêm hashtag này. Yêu cầu: nếu chưa có hashtag nào, tức nội dung của thành phần HASHTAG đó đang có giá trị "-", ta xoá "-" và ghi đè **newtag** vào đó. Nếu đã có các hashtag và **newtag** chưa xuất hiện trong các hashtag cũ, ta thêm "|" và **newtag** vào bên phải.*
 
@@ -251,6 +295,13 @@ print(questions[48][TAGS])
 addTag(questions[48], "Khởi nghĩa")
 print(questions[48][TAGS])
 ```
+
+    -
+    Vua
+    Vua|Bắc thuộc
+    Vua|Bắc thuộc
+    Vua|Bắc thuộc|Khởi nghĩa
+    
 
 ### Bài 8 - Xuất dữ liệu ra file
 
@@ -272,6 +323,9 @@ newquestions = parseQuestionsAsListOfList(readQuestionFileAsCleanLines("QCM2.csv
 print(newquestions[48][TAGS])
 ```
 
+    Vua|Bắc thuộc|Khởi nghĩa
+    
+
 ### Bài 9 - Phát sinh một câu hỏi ngẫu nhiên
 
 Ta xem như đã viết xong các hàm con cho ứng dụng 2. Quay lại với ứng dụng 1, đầu tiên cần tạo ra các câu hỏi ngẫu nhiên.
@@ -288,6 +342,9 @@ lines = readQuestionFileAsCleanLines("QCM.csv")
 questions = parseQuestionsAsListOfList(lines)
 print(generateRandomQuestion(questions)[3])
 ```
+
+    Thái thú nhà Hán phải cắt tóc, cạo râu, lẩn trong đám loạn quân chạy về nước trong cuộc khởi nghĩa Hai Bà Trưng là ai?
+    
 
 ### Bài10 - Phát sinh *N* câu hỏi ngẫu nhiên
 
@@ -309,6 +366,13 @@ print("")
 print(L[1][4][CONTENT])
 ```
 
+    <type 'tuple'>
+    [1, 47, 19, 30, 9]
+    Đâu trong các sự kiện dưới đây đánh dấu bước ngoặt cho thấy loài vượn đã tiến hoá thành loài người?
+    
+    Kim tự tháp Giza được xây dựng ở thời kì nào của Ai Cập cổ đại?
+    
+
 ### Bài 11 - Kiểm tra kết quả
 
 *Hãy viết hàm **isCorrectAnswer(question, answer)** nhận đối số **question** là một câu hỏi (tức một **list** 12 thành phần) và đối số **answer** là một trong 4 **str** "A", "B", "C" hoặc "D", và trả lại **True** hoặc **False** tuỳ theo đó có phải là câu trả lời đúng cho câu hỏi không.*
@@ -321,6 +385,9 @@ lines = readQuestionFileAsCleanLines("QCM.csv")
 questions = parseQuestionsAsListOfList(lines)
 print(isCorrectAnswer(questions[12], "B"))
 ```
+
+    True
+    
 
 ## Phần 3 - Ứng dụng thứ nhất - Trắc nghiệm
 
@@ -340,6 +407,41 @@ Ta xây dựng một hàm có tương tác với người sử dụng thực hi�
 ```python
 generateHistoryTest()
 ```
+
+    Please choose the number of question: 5
+    Bạo loạn do ai gây ra thời Lý Cao Tông khiến Lý Cao Tông, hoàng hậu và thái tử Lý Hạo Sảm phải bỏ kinh thành ẩn nấp tại Quy Hoá và Hải Ấp?
+    A. Phạm Du
+    B. Phạm Bỉnh Di
+    C. Quách Bốc
+    D. Đoàn Thượng
+    Please answer by typing A, B, C or D: A
+    Vua nào ở thời Lý khi lên ngôi có sự tranh chấp với em, phải dẹp bằng binh đao? (Sử cũ gọi là Loạn Tam vương)
+    A. Lý Thái Tông
+    B. Lý Thánh Tông
+    C. Lý Nhân Tông
+    D. Lý Anh Tông
+    Please answer by typing A, B, C or D: A
+    Thời Lý, Đại Việt không có chiến tranh với quốc gia nào sau đây?
+    A. Trảo Oa
+    B. Chân Lạp
+    C. Đại Lý
+    D. Chiêm Thành
+    Please answer by typing A, B, C or D: A
+    Kinh đô nước ta trong thời kì Hùng Vương thuộc địa phương nào hiện nay?
+    A. Phong Châu, Phú Thọ
+    B. Đông Anh, Hà Nội
+    C. Hoa Lư, Ninh Bình
+    D. Thanh Hoá
+    Please answer by typing A, B, C or D: A
+    Trận chiến ở phòng tuyến sông nào đánh dấu kết thúc thắng lợi của chiến tranh chống quân Tống năm 1077?
+    A. Bạch Đằng
+    B. Đản Nãi
+    C. Như Nguyệt
+    D. Lãnh Kinh
+    Please answer by typing A, B, C or D: A
+    Your score is 3 / 5
+    Game finished.
+    
 
 ### Cải tiến trò chơi
 
@@ -366,6 +468,10 @@ print(isGoodChoice(A, B, 3))
 print(isGoodChoice(B, A, 2))
 ```
 
+    True
+    False
+    
+
 ### Bài 13. Cải tiến trò chơi
 
 *Hãy viết hàm **generateRepeatedHistoryTest()** cho kịch bản cải tiến trên*.
@@ -376,6 +482,56 @@ Lưu ý rằng trong file TestHisMCQ.py không có test13. Bạn sẽ tự chạ
 ```python
 generateRepeatedHistoryTest()
 ```
+
+    Please choose the number of question: 2
+    Xuân Thu và Chiến Quốc là hai giai đoạn của thời kì nào sau đây của Trung Quốc cổ đại?
+    A. Tây Chu
+    B. Đông Chu
+    C. Tây Hán
+    D. Đông Hán
+    Please answer by typing A, B, C or D: A
+    Địa danh nào gắn với cuộc kháng chiến chống quân Trần Bá Tiên của Triệu Quang Phục?
+    A. Đầm Dơi
+    B. Sông Bạch Đằng
+    C. Đầm Dạ Trạch
+    D. Núi Tản Viên
+    Please answer by typing A, B, C or D: A
+    Your score this time is 0 / 2
+    Number of questions has been used in the database: 2.
+    Do you want to replay? Press 'Y' if yes, any other key if no: Y
+    Bạo loạn do ai gây ra thời Lý Cao Tông khiến Lý Cao Tông, hoàng hậu và thái tử Lý Hạo Sảm phải bỏ kinh thành ẩn nấp tại Quy Hoá và Hải Ấp?
+    A. Phạm Du
+    B. Phạm Bỉnh Di
+    C. Quách Bốc
+    D. Đoàn Thượng
+    Please answer by typing A, B, C or D: B
+    Một trong những sự kiện đánh dấu sự chuyển thời đại từ Xuân Thu sang Chiến Quốc ở Trung Quốc cổ đại là việc nước Tấn bị chia thành 3 nước nào sau đây?
+    A. Triệu, Nguỵ, Yên
+    B. Yên, Nguỵ, Hàn
+    C. Triệu, Nguỵ, Hàn
+    D. Yên, Hàn, Triệu
+    Please answer by typing A, B, C or D: D
+    Your score this time is 0 / 2
+    Number of questions has been used in the database: 4.
+    Do you want to replay? Press 'Y' if yes, any other key if no: Y
+    Ba người con của vua Lê Thái Tông từng ở ngôi vua là những ai?
+    A. Lê Nhân Tông, Lê Thánh Tông, Lê Hiến Tông
+    B. Lê Nhân Tông, Lê Thánh Tông, Lê Nghi Dân (Lạng Sơn Vương)
+    C. Lê Thánh Tông, Lê Hiến Tông, Lê Nghi Dân (Lạng Sơn Vương)
+    D. Lê Nhân Tông, Lê Hiến Tông, Lê Nghi Dân (Lạng Sơn Vương)
+    Please answer by typing A, B, C or D: B
+    Thủ khoa thi đình đầu tiên trong lịch sử Việt Nam (thời Lý Nhân Tông) là ai?
+    A. Mạc Đĩnh Chi
+    B. Nguyễn Hiền
+    C. Lê Văn Thịnh
+    D. Lương Thế Vinh
+    Please answer by typing A, B, C or D: C
+    Your score this time is 2 / 2
+    Number of questions has been used in the database: 6.
+    Do you want to replay? Press 'Y' if yes, any other key if no: N
+    Your highest score in an attempt is 2 / 2
+    Game finished.
+    
 
 ## Phần 4 - Ứng dụng thứ hai - Cập nhật tag bằng tìm kiếm từ khoá
 
@@ -393,8 +549,42 @@ Kịch bản cho ứng dụng thứ hai như sau.
 generateTagUpdateApplication()
 ```
 
-    Which keyword do you want to search? Please type in Vietnamese without accent: Việt Nam
-    0 questions found.
+    Which keyword do you want to search? Please type in Vietnamese without accent: Nam
+    16 questions found.
+    What is the hashtag you would like to use?: Vietnam
+    Thời kì Nam Bắc triều ở Trung Quốc diễn ra trong những thế kì nào?
+    Do you want to tag this question with the hashtag Vietnam? Press 'Y' if yes, any other key if no: N
+    Next question: 
+    Tại di chỉ nào dưới đây các nhà khảo cổ đã tìm thấy hoá thạch của răng người tối cổ ở Việt Nam?
+    Do you want to tag this question with the hashtag Vietnam? Press 'Y' if yes, any other key if no: Y
+    Tướng giặc nào của Nam Hán tử trận trên sông Bạch Đằng trong trận chiến với Ngô Quyền năm 938?
+    Do you want to tag this question with the hashtag Vietnam? Press 'Y' if yes, any other key if no: Y
+    Thời Triệu (Nam Việt) đô hộ (thế kỉ II TCN), nước ta được chia thành các đơn vị hành chính nào?
+    Do you want to tag this question with the hashtag Vietnam? Press 'Y' if yes, any other key if no: Y
+    Cuối thế kỉ I, đầu thế kỉ II, thái thú nào của nhà Hán đã thực hiện nhiều chính sách tiến bộ trong việc quản lí vùng đất nước ta hiện nay, được người đời sau gọi là "Nam Giao học tổ"?
+    Do you want to tag this question with the hashtag Vietnam? Press 'Y' if yes, any other key if no: Y
+    Quốc hiệu nước ta dưới thời Lý Nam Đế là gì?
+    Do you want to tag this question with the hashtag Vietnam? Press 'Y' if yes, any other key if no: Y
+    Năm 866, nhà Đường đổi vùng lãnh thổ Bắc Việt Nam thành đơn vị hành chính nào?
+    Do you want to tag this question with the hashtag Vietnam? Press 'Y' if yes, any other key if no: Y
+    Người Việt Nam nào đã phát minh ra súng thần công?
+    Do you want to tag this question with the hashtag Vietnam? Press 'Y' if yes, any other key if no: Y
+    Những vua nào thời Tiền Lê được truy tôn miếu hiệu? (Miếu hiệu của một vua Việt Nam bắt đầu bằng họ của vua, tiếp đến là một chữ và cuối cùng là chữ "Tổ" hoặc "Tông", ví dụ Lí Thái Tổ, Trần Thái Tông)
+    Do you want to tag this question with the hashtag Vietnam? Press 'Y' if yes, any other key if no: Y
+    Vân Đồn, thương cảng Việt Nam đầu tiên thời phong kiến, được mở dưới thời vua nào?
+    Do you want to tag this question with the hashtag Vietnam? Press 'Y' if yes, any other key if no: Y
+    Quốc hiệu Đại Việt được sử dụng từ thời vua nào của Việt Nam?
+    Do you want to tag this question with the hashtag Vietnam? Press 'Y' if yes, any other key if no: Y
+    Vương triều nào dưới đây có thời gian trị vì lâu nhất tại Việt Nam?
+    Do you want to tag this question with the hashtag Vietnam? Press 'Y' if yes, any other key if no: Y
+    Thủ khoa thi đình đầu tiên trong lịch sử Việt Nam (thời Lý Nhân Tông) là ai?
+    Do you want to tag this question with the hashtag Vietnam? Press 'Y' if yes, any other key if no: Y
+    Với 56 năm cai trị, vua nào ở ngôi lâu nhất trong lịch sử Việt Nam thời phong kiến?
+    Do you want to tag this question with the hashtag Vietnam? Press 'Y' if yes, any other key if no: Y
+    Quốc giáo của Việt Nam thời Lý là tôn giáo nào?
+    Do you want to tag this question with the hashtag Vietnam? Press 'Y' if yes, any other key if no: Y
+    Trong 4 công trình dưới đây ("An Nam tứ đại khí" của Đại Việt), công trình nào không được chế tác, xây dựng thời Lý?
+    Do you want to tag this question with the hashtag Vietnam? Press 'Y' if yes, any other key if no: Y
     No more question!
     Process finished!
     
