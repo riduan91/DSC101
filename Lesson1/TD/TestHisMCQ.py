@@ -6,7 +6,7 @@ Created on Tue Jan 09 23:40:21 2018
 """
 
 import sys
-from HisMCQ import *
+from HisMCQ_Solution import *
 
 DATAFILE = "QCM.csv"
 
@@ -21,17 +21,17 @@ def test0():
 def test1():
     checker = 1
     text = readQuestionFileAsString(DATAFILE)
-    if len(text) != 16812:
+    if len(text) not in [16812, 13258] :
         print("Function readQuestionFileAsString() not OK.")
         checker = 0
     
     lines = readQuestionFileAsLines(DATAFILE)
-    if len(lines) != 77 or len(lines[34]) != 103:
+    if len(lines) != 77 or len(lines[34]) not in [103, 85]:
         print("Function readQuestionFileAsLines() not OK.")
         checker = 0
     
     lines = readQuestionFileAsCleanLines(DATAFILE)
-    if len(lines) != 77 or len(lines[34]) != 102:
+    if len(lines) != 77 or len(lines[34]) not in [102, 84]:
         print("Function readQuestionFileAsCleanLines() not OK.")
         checker = 0
     
@@ -72,7 +72,7 @@ def test4():
     checker = 1
     lines = readQuestionFileAsCleanLines(DATAFILE)
     questions = parseQuestionsAsDictionary(lines)
-    if len(questions) != 77 or int(questions[-520583810][2]) != 49:
+    if len(questions) != 77 or int(questions[hash("Quốc hiệu nước ta dưới thời Lý Nam Đế là gì?")][2]) != 49:
         print("parseQuestionsAsDictionary() not OK")
         checker = 0
     

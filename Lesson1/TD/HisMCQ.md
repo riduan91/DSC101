@@ -69,7 +69,7 @@ from HisMCQ_Solution import *
 ### Bài 1 - Đọc dữ liệu
 *(1) Hãy viết hàm **readQuestionFileAsString(filename)** nhận đối số **filename** là tên (đường dẫn) của file dữ liệu, và trả lại toàn bộ nội dung của file dưới dạng một **str**.*
 
-Gợi ý: Sau khi viết, bạn có thể thử bằng test sau. Độ dài của **str** cần là 16812.
+Gợi ý: Sau khi viết, bạn có thể thử bằng test sau. Độ dài của **str** cần là 16812 nếu dùng Python 2 hoặc 13258 nếu dùng Python 3.
 
 
 ```python
@@ -182,7 +182,7 @@ Giả sử tình huống của bài 3 có xuất hiện trong thực tế và ta
 lines = readQuestionFileAsCleanLines("QCM.csv")
 questions = parseQuestionsAsDictionary(lines)
 A = hash("Quốc hiệu nước ta dưới thời Lý Nam Đế là gì?")
-print(A)
+print(A) #May have different result in Python 3
 print(questions[hash(A)])
 ```
 
@@ -445,7 +445,7 @@ generateHistoryTest()
 
 ### Cải tiến trò chơi
 
-Bây giờ, ta muốn cải tiến hàm này. Sau khi người chơi trả lời xong *N* câu (*N* $\leq$ 50), chương trình sẽ hỏi người chơi có muốn tiếp tục hay không. Nếu người chơi nhấn "Y" (in hoa), chương trình sẽ tạo lại ngẫu nhiên *N* câu hỏi sao cho" không quá *N/3* đã được sử dụng trước đó" (ta gọi đây là **điều kiện 1**. Nếu điều kiện 1 không thoả mãn, chương trình sẽ lặp lại việc tạo ngẫu nhiên cho đến khi hoặc điều kiện 1 được thoả mãn, hoặc đã thực hiện đến bước lặp thứ 50. 
+Bây giờ, ta muốn cải tiến hàm này. Sau khi người chơi trả lời xong *N* câu (*N* $\leq$ 50), chương trình sẽ hỏi người chơi có muốn tiếp tục hay không. Nếu người chơi nhấn "Y" (in hoa), chương trình sẽ tạo lại ngẫu nhiên *N* câu hỏi sao cho" không quá *N/3* đã được sử dụng trước đó" (ta gọi đây là **điều kiện 1**). Nếu điều kiện 1 không thoả mãn, chương trình sẽ lặp lại việc tạo ngẫu nhiên cho đến khi hoặc điều kiện 1 được thoả mãn, hoặc đã thực hiện đến bước lặp thứ 50. 
 
 - Nếu đã thực hiện bước lặp 50 mà điều kiện 1 vẫn không được thoả mãn. Chương trình thông báo không còn câu hỏi, in số câu trả lời đúng của người chơi và kết thúc.
 - Nếu chọn được bộ câu hỏi thoả mãn điều kiện 1, trò chơi tiếp tục với việc in từng câu hỏi trong số *N* câu hỏi mới cho người chơi và nhận đáp án. Cuối cùng, cũng hỏi người chơi có muốn tiếp tục một bộ câu hỏi nữa hay không.
