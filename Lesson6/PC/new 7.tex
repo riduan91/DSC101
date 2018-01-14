@@ -1,0 +1,108 @@
+\documentclass{article}
+\usepackage[top=1in, bottom=1.25in, left=1.25in, right=1.25in]{geometry}
+\usepackage[vietnamese]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{hyperref}
+
+\let\mb\mathbf
+\let\eop\qedsymbol
+
+\title{PC 6 - Linear Regression - Hồi quy tuyến tính}
+\author{Ri Duan}
+\date{Tháng 1/2018}
+
+\begin{document}
+
+\maketitle
+
+\section{Mô hình xác suất đối với Linear Regression}
+Mô hình xác suất đối với Linear Regression được giả thiết như sau:
+\begin{itemize}
+	\item $\mb X$ (một ma trận $N\times D$), $\mb y$ (một vector $N$ chiều)  và $\mb R$. Các hàng của $\mb X$ được kí hiệu $\mb X_1, \ldots, \mb X_N$ biểu diễn $N$ quan sát của một biến ngẫu nhiên trong $\mb R^d$. Các toạ độ của $\mb y$ được kí hiệu $y_1, \ldots, y_N$, biểu diễn $N$ quan sát tương ứng của một biến ngẫu nhiên trong $\mb R$.
+	\item Giả sử mật độ có điều kiện $p(y_i| X_i)$ tuân theo 
+		$$
+			p(y_i|\mb X_i) \sim \mathcal N (\mb X_i \cdot \mb w, \beta^{-1})
+		$$
+		trong đó $\mb w$ là một vector $D$ chiều chưa biết, nhưng là đại lượng xác định (không ngẫu nhiên).
+		
+		Giả thiết này có thể viết lại thành $y_i = \mb X_i \cdot w + \epsilon$, trong đó $p(\epsilon_i| \mb X_i)$ tuân theo luật $\mathcal N (0, \beta^{-1})$.
+	
+	\item Các hàng của $\mb X$ sinh ra hoàn toàn độc lập, tức là $p(\mb X_i, \mb X_j, \ldots, X_k) = p(\mb X_i)p(\mb X_j)\ldots p(\mb X_k)$ với mọi tập con $\{i, j , \ldots, k\}$ của $\{1, \ldots, N\}$.
+	\item Dữ liệu của các chỉ số hoàn toàn độc lập với nhau, tức là $p(\mb X_i, \mb X_j, \ldots, \mb X_k, y_i, y_j, \ldots, y_k) = p(\mb X_i, y_i)p(\mb X_j, y_j)\ldots p(\mb  X_k, y_k)$, với mọi tập con $\{i, j , \ldots, k\}$ của $\{1, \ldots, N\}$. Từ giả thiết này suy ra $p(\epsilon_i| \mb X_i)$ iid.
+\end{itemize}
+
+Likelihood được định nghĩa là $p(\mathbf y|\mathbf X) = p(y_1, \ldots, y_N | \mb X_1, \ldots, \mb X_N)$. Chứng minh rằng việc tìm $\mb w, \beta$ maximize likelihood dẫn đến việc tìm $\mb w$ minimize hàm thất thoát $L_2$ trong bài giảng.
+
+\paragraph{Lời giải}
+
+Ta có
+\begin{align}
+p(\mb y | \mb X) = p(y_1, \ldots, y_N | \mb X_1, \ldots, \mb X_N) &= \frac{p(\mb X_1, \ldots, \mb X_N, y_1, \ldots, y_N)}{p(\mb X_1, \ldots, \mb X_N)} \nonumber \\
+&= \frac{p(\mb X_1, y_1) \ldots p(\mb X_N, y_N)}{p(\mb X_1) \ldots p(\mb \mb X_N)} \nonumber \\
+&= p(y_1|\mb X_1)\ldots p(y_N|\mb X_N) \nonumber \\
+&= \left( \frac\beta{2\pi}\right)^{N/2} \prod_{n=1}^N \exp\left( \frac{- \beta (\mb X_n \cdot w - y_n)^2}{2} \right) \nonumber \\
+&= \left( \frac\beta{2\pi}\right)^{N/2} \exp\left(\frac{- \beta  }{2} \sum_{n=1}^N (\mb X_n \cdot \mb w - y_n)^2 \right)  \nonumber \\
+&= \left( \frac\beta{2\pi}\right)^{N/2} \exp\left(\frac{- \beta  }{2} \left\Vert \mb X \mb w - \mb y \right\Vert^2 \right)
+\end{align}
+
+Dễ thấy với mỗi $\beta$ xác định, $p(\mb y | \mb X)$ lớn nhất khi 
+$ \left\Vert \mb X \mb w - \mb y \right\Vert^2 $ nhỏ nhất. Do đó nếu $(\hat{ \mb w}, \hat {\mb \beta})$ maximize $p(\mb y | \mb X)$ thì $\hat{ \mb w}$ minimize $ \left\Vert \mb X \mb w - \mb y \right\Vert^2 $, chính là hàm loss $L_2$ trong bài (sai khác một hằng số nhân). \eop
+
+\section{Maximum likelihood và under-estimation}
+Ta đang làm việc trên mô hình xác suất của bài 1. Ta cần tìm $(\hat{\mb w}, \hat \beta)$ để maximize $p(\mb y | \mb X)$. Giả thiết rằng $\mb X^T \mb X$ khả nghịch.
+\begin{enumerate}
+    \item Tại sao từ giả thiết có thể suy ra $D \leq N$?
+    \item Tìm $(\hat{\mb w}, \hat \beta)$. (Gợi ý: $\hat {\mb w}$ đã được tính trong bài)
+    \item Chứng minh rằng $\mb E[\hat{\mb w} | X] = \mb w$. (Ta nói ước đoán $\mb w$ bằng $\hat {\mb w}$ không bị thiên lệch)
+    \item Tính $\mb E[\hat{\beta} | X]$. Ước lượng tử đang dùng có bị thiên lệch không? Nên dùng ước lượng tử nào để kết quả không bị thiên lệch?
+\end{enumerate}
+
+\paragraph{Lời giải}
+\begin{enumerate}
+	\item Ma trận $\mb X^T \mb X$ có kích thước $D\times D$ và khả nghịch nên $\mathrm{rank}(\mb X^T \mb X) = D$. Lại có $\mathrm{rank} (\mb X^T \mb X) \leq \mathrm{rank}(\mb X) \leq N$. 
+	\item Đặt
+	$$
+	L = -\log p(\mb y| \mb X) = -\frac N 2 \log(\beta) + \frac N 2 \log(2\pi) + \frac{\beta  }{2} \left\Vert \mb X \mb w - \mb y \right\Vert^2 
+	$$
+	
+	Ta có:
+	$$
+	\nabla_{\mb w} L = \beta \mb X^T (\mb X \mb w - \mb y)
+	$$
+	$$
+	\nabla_\beta L = \frac12\left( \left\Vert \mb X \mb w - \mb y \right\Vert^2 - \frac {N}{\beta} \right)
+	$$
+	
+	Điểm dừng $(\hat{\mb w}, \hat \beta)$ phải thoả mãn 
+	$$
+	\beta \mb X^T (\mb X^T \hat{\mb w} - \mb y) = 0
+	$$
+	$$
+	\left( \left\Vert \mb X \hat{\mb w} - \mb y \right\Vert^2 - \frac {N} {\hat{\beta}} \right)
+	$$
+	
+	Từ phương trình thứ nhất suy ra $\hat{\mb w} = (\mb X^T \mb X)^{-1} \mb X^T \mb y$.
+	
+	Từ phương trình thứ hai suy ra $$\hat{\beta} = \frac{\left\Vert \mb X \hat{\mb w} - \mb y \right\Vert^2}{N}$$.
+	
+	Đây là đie
+	\item 
+	\begin{align}
+	\mb E[\hat{\mb w} | \mb X] &= \mb E [(\mb X^T \mb X)^{-1}\mb X^T (\mb X \mb w + \mb \epsilon) | \mb X] \nonumber \\
+	&= \mb w + \mb E [(\mb X^T \mb X)^{-1} \mb X^T \mb \epsilon | \mb X] \nonumber \\
+	&= \mb w + (\mb X^T \mb X)^{-1}  \mb X^T \mb E [\mb \epsilon | \mb X] \nonumber \\
+	&= \mb 0
+	\end{align}
+	
+\end{enumerate}
+
+\section{Một cách nhìn hình học}
+
+
+
+\section{Mô hình xác suất với Ridge, Lasso và ElasticNet}
+
+\section{Vì sao Ridge thường giúp giảm số chiều?}
+
+\end{document}
