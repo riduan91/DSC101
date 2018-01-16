@@ -746,12 +746,368 @@ print(A)  #Should be rectangle if we comment out the __str__ method in Parallelo
 
 # 4. Exception
 
+# 5. An example: R^2 geometry
+
+In this section we will look at some examples and understand how classes let us write clean codes to solve high school math exercises.
+
+**Question 1:** Find the distance between 2 points: A(1, 5) and B(-4, 1)
+
 
 ```python
+import math
 
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+            
+    def __str__(self):
+        return "(%f, %f)" % (self.x, self.y)
+    
+    def getDistance(self, Point2):
+        return math.sqrt((self.x - Point2.x)**2 + (self.y - Point2.y)**2)
+
+    #Another way to write the above function: use static method
+    @staticmethod #No need in Python 3
+    def distance(Point1, Point2):
+        return math.sqrt((Point1.x - Point2.x)**2 + (Point1.y - Point2.y)**2)
+
+A = Point(1, 5)
+B = Point(6, 1)
+print(A)
+print(B)
+AB = A.getDistance(B)
+print(AB)
+AB = Point.getDistance(A, B)
+print(AB)
 ```
+
+    (1.000000, 5.000000)
+    (6.000000, 1.000000)
+    6.40312423743
+    6.40312423743
+    
+
+**Question 2**: Let A(1, 5) and B(-4, 1). Find the equation of the line AB in form $ax + by + c = 0$ where $a^2 + b^2 + c^2 > 0.$
 
 
 ```python
+class Line:
+    # Equation of a line: ax + by + c = 0
+    def __init__(self, Point1, Point2):
+        if Point1.x == Point2.x and Point1.y == Point2.y:
+            raise Error("Impossible to construct the line")
+        else:
+            self.a = Point2.y - Point1.y
+            self.b = Point1.x - Point2.x
+            self.c = Point1.y*Point2.x - Point1.x*Point2.y
+    
+    def __str__(self):
+        return "(%f) * x + (%f) * y + (%f) = 0" % (self.a, self.b, self.c)
 
+A = Point(1, 5)
+B = Point(6, 1)
+d = Line(A, B)
+print(d)
 ```
+
+    (-4.000000) * x + (-5.000000) * y + (29.000000) = 0
+    
+
+**Question 3:** Let A(0, 0), B(1, 2), C(3, -1), D(1, -5). Is $AB \parallel CD$? (Convention: a line is parallel to itself.)
+
+
+```python
+class Line:
+    # Equation of a line: ax + by + c = 0
+    def __init__(self, Point1, Point2):
+        if Point1.x == Point2.x and Point1.y == Point2.y:
+            raise Error("Impossible to construct the line")
+        else:
+            self.a = Point2.y - Point1.y
+            self.b = Point1.x - Point2.x
+            self.c = Point1.y*Point2.x - Point1.x*Point2.y
+    
+    def __str__(self):
+        return "(%f) * x + (%f) * y + (%f) = 0" % (self.a, self.b, self.c)
+    
+    def isParallel(self, Line2):
+        return self.a * Line2.b - self.b * Line2.a == 0
+        
+A = Point(0, 0)
+B = Point(1, 2)
+C = Point(3, -1)
+D = Point(1, -5)
+d1 = Line(A, B)
+d2 = Line(C, D)
+print(d1)
+print(d2)
+print(d1.isParallel(d2))
+```
+
+    (2.000000) * x + (-1.000000) * y + (0.000000) = 0
+    (-4.000000) * x + (2.000000) * y + (14.000000) = 0
+    True
+    
+
+**Question 4:** Let A(0, 0), B(4, 4), C(3, -3), D(1, -1). Is $AB\perp CD$?
+
+
+```python
+class Line:
+    # Equation of a line: ax + by + c = 0
+    def __init__(self, Point1, Point2):
+        if Point1.x == Point2.x and Point1.y == Point2.y:
+            raise Error("Impossible to construct the line")
+        else:
+            self.a = Point2.y - Point1.y
+            self.b = Point1.x - Point2.x
+            self.c = Point1.y*Point2.x - Point1.x*Point2.y
+    
+    def __str__(self):
+        return "(%f) * x + (%f) * y + (%f) = 0" % (self.a, self.b, self.c)
+    
+    def isParallel(self, Line2):
+        return self.a * Line2.b - self.b * Line2.a == 0
+    
+    def isPerpendicular(self, Line2):
+        return self.a * Line2.a + self.b * Line2.b == 0
+
+A = Point(0, 0)
+B = Point(4, 4)
+C = Point(3, -4)
+D = Point(1, -2)
+d1 = Line(A, B)
+d2 = Line(C, D)
+print(d1)
+print(d2)
+print(d1.isParallel(d2))
+print(d1.isPerpendicular(d2))
+```
+
+    (4.000000) * x + (-4.000000) * y + (0.000000) = 0
+    (2.000000) * x + (2.000000) * y + (2.000000) = 0
+    False
+    True
+    
+
+**Question 5:** Let A(0, 0), B(4, 4), C(3, -3), D(1, -1). Find the point of intersection of $AB$ and $CD$.
+
+
+```python
+class Line:
+    # Equation of a line: ax + by + c = 0
+    def __init__(self, Point1, Point2):
+        if Point1.x == Point2.x and Point1.y == Point2.y:
+            raise Error("Impossible to construct the line")
+        else:
+            self.a = Point2.y - Point1.y
+            self.b = Point1.x - Point2.x
+            self.c = Point1.y*Point2.x - Point1.x*Point2.y
+    
+    def __str__(self):
+        return "(%f) * x + (%f) * y + (%f) = 0" % (self.a, self.b, self.c)
+    
+    def isParallel(self, Line2):
+        return self.a * Line2.b - self.b * Line2.a == 0
+    
+    def isPerpendicular(self, Line2):
+        return self.a * Line2.a + self.b * Line2.b == 0
+    
+    def getIntersection(self, Line2):
+        if self.isParallel(Line2):
+            return None
+        det1 = self.a * Line2.c - self.c * Line2.a
+        det2 = self.c * Line2.b - self.b * Line2.c
+        det3 = self.a * Line2.b - self.b * Line2.a
+        return Point(-float(det1)/det3, -float(det2)/det3) #No need float in Python 3
+
+A = Point(0, 0)
+B = Point(4, 4)
+C = Point(3, -4)
+D = Point(1, -2)
+d1 = Line(A, B)
+d2 = Line(C, D)
+print(d1)
+print(d2)
+print(d1.getIntersection(d2))
+```
+
+    (4.000000) * x + (-4.000000) * y + (0.000000) = 0
+    (2.000000) * x + (2.000000) * y + (2.000000) = 0
+    (-0.500000, -0.500000)
+    
+
+**Question 6:** Let A(0, 4), B(1, 7), C(-2, -2). Are they aligned?
+
+
+```python
+A = Point(0, 4)
+B = Point(1, 7)
+C = Point(-2, -2)
+print(Line(A, B).isParallel(Line(A, C)))
+```
+
+    True
+    
+
+**Question 7:** Let A(0, 4), B(3, 3), C(-2, -2). Write the equation of the line pass through $A$ and perpendicular to $BC$.
+
+
+```python
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+            
+    def __str__(self):
+        return "(%f, %f)" % (self.x, self.y)
+    
+    def getDistance(self, Point2):
+        return math.sqrt((self.x - Point2.x)**2 + (self.y - Point2.y)**2)
+    
+    def getPerpendicularLineToLine(self, Line2):
+        result = Line(Point(0, 0), Point(1, 1)) #Default value, not important.
+        result.a = -Line2.b
+        result.b = Line2.a
+        result.c = -(result.a * self.x + result.b * self.y)
+        return result
+
+A = Point(0, 4)
+BC = Line(Point(3, 3), Point(-2, -2))
+print(BC)
+print(A.getPerpendicularLineToLine(BC))
+```
+
+    (-5.000000) * x + (5.000000) * y + (0.000000) = 0
+    (-5.000000) * x + (-5.000000) * y + (20.000000) = 0
+    
+
+**Question 8:** Let A(0, 4), B(3, 3), C(-2, -2). Find the height $AH$ of the triangle $ABC$.
+
+
+```python
+A = Point(0, 4)
+BC = Line(Point(3, 3), Point(-2, -2))
+d = A.getPerpendicularLineToLine(BC)
+H = d.getIntersection(BC)
+print(A.getDistance(H))
+```
+
+    2.82842712475
+    
+
+**Question 9:** Let A(0, 4), B(3, 3), C(-2, -2). Find the height AH of the triangle ABC.
+
+
+```python
+class Triangle:
+    def __init__(self, A, B, C):
+        self.A = A
+        self.B = B
+        self.C = C
+        self.BC = Line(B, C)
+        self.CA = Line(C, A)
+        self.AB = Line(A, B)
+    
+    def getArea(self):
+        d = (self.A).getPerpendicularLineToLine(self.BC)
+        H = d.getIntersection(self.BC)
+        length_AH = A.getDistance(H)
+        length_BC = B.getDistance(C)
+        return 1./2 * length_AH * length_BC
+
+ABC = Triangle(Point(0, 4), Point(3, 3), Point(-2, -2))
+print(ABC.getArea())
+```
+
+    13.416407865
+    
+
+**Question 10:** Let A(0, 4), B(3, 3), C(-2, -2). Find the equation of the circle pass through $A, B, C$.
+
+<img src="Circle.png"></img>
+
+http://www.wolframalpha.com/widgets/view.jsp?id=b0d28dd78e48b231c995d69b91666803
+
+
+```python
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+            
+    def __str__(self):
+        return "(%f, %f)" % (self.x, self.y)
+    
+    def getDistance(self, Point2):
+        return math.sqrt((self.x - Point2.x)**2 + (self.y - Point2.y)**2)
+    
+    def getPerpendicularLineToLine(self, Line2):
+        result = Line(Point(0, 0), Point(1, 1)) #Default value, not important.
+        result.a = -Line2.b
+        result.b = Line2.a
+        result.c = -(result.a * self.x + result.b * self.y)
+        return result
+
+    def getMidPoint(self, Point2):
+        return Point((self.x + Point2.x)/2., (self.y + Point2.y)/2.)
+
+class Line:
+    # Equation of a line: ax + by + c = 0
+    def __init__(self, Point1, Point2):
+        if Point1.x == Point2.x and Point1.y == Point2.y:
+            raise Error("Impossible to construct the line")
+        else:
+            self.a = Point2.y - Point1.y
+            self.b = Point1.x - Point2.x
+            self.c = Point1.y*Point2.x - Point1.x*Point2.y
+    
+    def __str__(self):
+        return "(%f) * x + (%f) * y + (%f) = 0" % (self.a, self.b, self.c)
+    
+    def isParallel(self, Line2):
+        return self.a * Line2.b - self.b * Line2.a == 0
+    
+    def isPerpendicular(self, Line2):
+        return self.a * Line2.a + self.b * Line2.b == 0
+    
+    def getIntersection(self, Line2):
+        if self.isParallel(Line2):
+            return None
+        det1 = self.a * Line2.c - self.c * Line2.a
+        det2 = self.c * Line2.b - self.b * Line2.c
+        det3 = self.a * Line2.b - self.b * Line2.a
+        return Point(-float(det2)/det3, -float(det1)/det3) #No need float in Python 3
+
+class Circle:
+    #Equation: (x - a)^2 + (y - b)^2 = r^2
+    def __init__(self, center, radius):
+        self.center = center
+        self.radius = radius
+        
+    def __str__(self):
+        return "((x - (%f))^2 + (y - (%f))^2 = %f)" % (self.center.x, self.center.y, self.radius ** 2)
+
+A = Point(0, 4)
+B = Point(3, 3)
+C = Point(2, -2)
+BC = Line(B, C)
+AB = Line(A, B)
+AB_midpoint = A.getMidPoint(B)
+BC_midperpend = BC_midpoint.getPerpendicularLineToLine(BC)
+AB_midperpend = AB_midpoint.getPerpendicularLineToLine(AB)
+O = BC_midperpend.getIntersection(AB_midperpend)
+print O
+distance_OA = O.getDistance(A)
+distance_OB = O.getDistance(B)
+distance_OC = O.getDistance(C)
+print(distance_OA, distance_OB, distance_OC)
+Outcircle = Circle(O, distance_OA)
+print(Outcircle)
+```
+
+    (0.625000, 0.875000)
+    (3.1868871959954905, 3.1868871959954905, 3.1868871959954905)
+    ((x - (0.625000))^2 + (y - (0.875000))^2 = 10.156250)
+    
