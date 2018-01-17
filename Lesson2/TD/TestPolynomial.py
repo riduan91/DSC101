@@ -5,7 +5,7 @@ Created on Sun Dec 31 22:05:09 2017
 @author: ndoannguyen
 """
 
-from Polynomial import Polynomial, PolynomialError, LinearPolynomial, QuadraticPolynomial, CubicPolynomial
+from Polynomial_Solutions import Polynomial, PolynomialError, LinearPolynomial, QuadraticPolynomial, CubicPolynomial
 import sys
 
 TOLERANCE = 0.01
@@ -351,7 +351,12 @@ def test13():
         p = Polynomial(lp)
         print "Extrema of ", lp
         r1 = p.getLocalMin()
+        for i in range(len(r1)):
+            r1[i] = round(r1[i], 4)
+        
         r2 = p.getLocalMax()
+        for i in range(len(r2)):
+            r2[i] = round(r2[i], 4)
         if r1 != res1 or r2 != res2:
             print "Expected: ", res1, res2
             print "Received: ", r1, r2
