@@ -19,6 +19,13 @@ class Polynomial:
             Initialize a polynomial (self)
         """
         #TODO
+    
+    def __str__(self):
+        """
+            Exercise 1
+            Print a polynomial in beautiful form.
+        """
+        #TODO, NOTEST
 
     
     def getCoefficients(self):

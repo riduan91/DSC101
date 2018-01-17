@@ -6,41 +6,13 @@ Created on Fri Oct 27 14:48:04 2017
 """
 
 import math, cmath, random
-EPSILON = 0.001
-TOLERANCE = 0.0001
+EPSILON = 0.00001
+TOLERANCE = 0.00001
 MAX_ITERATIONS = 1000
 
 import numpy as np
 
 #------------------------------------------------------------------------------        
-def simplify(coefficients):
-    """
-        Simplify a list by remove zeros on right hand side
-        Ex: simplify([1, 2, 3, 0, 0, 0]) = [1, 2, 3]
-        Input: A list
-        Output: A list
-    """
-    current_degree = -1
-    for i in range(len(coefficients)):
-        if (abs(coefficients[i]) > EPSILON):
-            current_degree = i
-    return coefficients[:current_degree + 1]
-
-def getNextApproximations(f, x):
-    x0, x1, x2 = x[0], x[1], x[2]
-    c = f(x2)
-    
-    LeftMatrix = np.array([[(x0 - x2)**2, x0 - x2], [(x1 - x2)**2, x1 - x2]])
-    RightMatrix = np.array([f(x0) - c, f(x1) - c])
-    Solution = np.linalg.solve(LeftMatrix, RightMatrix)
-
-    a, b = Solution[0], Solution[1]
-    delta = b**2 - 4*a*c
-    if abs(b + cmath.sqrt(delta)) > abs(b - cmath.sqrt(delta)):
-        x3 = x2 + (-2*c)/(b + cmath.sqrt(delta))
-    else:
-        x3 = x2 + (-2*c)/(b - cmath.sqrt(delta))
-    return x1, x2, x3
     
 class PolynomialError(Exception):
     def __init__(self, notification):
@@ -56,6 +28,41 @@ class Polynomial:
             Initialize a polynomial
         """
         self.__coefficients = simplify(coefficients)
+    
+    def __str__(self):
+        """
+            Exercise 1:
+            Print a polynomial
+        """
+        if self.__coefficients == []:
+            return "0"
+        expression = ""
+        for i, coef in enumerate(self.__coefficients):
+            if coef > 0:
+                expression += "+ "
+                if i == 0:
+                    expression += str(coef)
+                elif coef != 1:
+                    expression += str(coef) + "*"
+                if i > 0:
+                    expression += "X"
+                    if i > 1:
+                        expression += "^" + str(i) 
+                expression += " "
+            if coef < 0:
+                expression += "- "
+                if i == 0:
+                    expression += str(-coef)
+                elif coef != -1:
+                    expression += str(-coef) + "*"
+                if i > 0:
+                    expression += "X"
+                    if i > 1:
+                        expression += "^" + str(i) 
+                expression += " "
+        if expression[0] == "+":
+            expression = expression[2:] #Remove "+ " if the first coefficient is >0
+        return expression
     
     def getCoefficients(self):
         """
@@ -143,7 +150,7 @@ class Polynomial:
             raise PolynomialError("Impossible to divide by 0")
             return
             
-        remainder = Polynomial(self.__coefficients)
+        remainder = Polynomial(self.__coefficients) #Generate a copy of self and assign it to remainder
         
         if self.getDegree() < P.getDegree():
             return Polynomial([]), remainder
@@ -238,7 +245,6 @@ class Polynomial:
             roots += current_polynomial.getRoots()
             
             for i in range(len(roots)):
-                roots[i] = round(roots[i].real, 4) + round(roots[i].imag, 4) * 1j
                 if roots[i].imag == 0:
                     roots[i] = roots[i].real
                 
@@ -347,3 +353,35 @@ class CubicPolynomial(Polynomial):
         Polynomial.__init__(self, coefficients)
         if self.getDegree() != 3:
             raise PolynomialError("Not a cubic polynomial.")
+
+
+#--------------SOME AUXILARY FUNCTIONS-------------------
+
+def simplify(coefficients):
+    """
+        Simplify a list by remove zeros on right hand side
+        Ex: simplify([1, 2, 3, 0, 0, 0]) = [1, 2, 3]
+        Input: A list
+        Output: A list
+    """
+    current_degree = -1
+    for i in range(len(coefficients)):
+        if (abs(coefficients[i]) > EPSILON):
+            current_degree = i
+    return coefficients[:current_degree + 1]
+
+def getNextApproximations(f, x):
+    x0, x1, x2 = x[0], x[1], x[2]
+    c = f(x2)
+    
+    LeftMatrix = np.array([[(x0 - x2)**2, x0 - x2], [(x1 - x2)**2, x1 - x2]])
+    RightMatrix = np.array([f(x0) - c, f(x1) - c])
+    Solution = np.linalg.solve(LeftMatrix, RightMatrix)
+
+    a, b = Solution[0], Solution[1]
+    delta = b**2 - 4*a*c
+    if abs(b + cmath.sqrt(delta)) > abs(b - cmath.sqrt(delta)):
+        x3 = x2 + (-2*c)/(b + cmath.sqrt(delta))
+    else:
+        x3 = x2 + (-2*c)/(b - cmath.sqrt(delta))
+    return x1, x2, x3
