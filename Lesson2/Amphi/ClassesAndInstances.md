@@ -744,9 +744,181 @@ print(A)  #Should be rectangle if we comment out the __str__ method in Parallelo
     Parallelogram(10, 10, 90)
     
 
-# 4. Exception
+# 4. Exceptions
 
-# 5. An example: R^2 geometry
+## 4.1 Exceptions
+
+In general, an exception of type "...Error" in Python stops the program to continue.
+
+
+```python
+def divide(a, b):
+    print "Hello"
+    print a/b
+    print "Goodbye"
+
+#divide(2, 0)
+```
+
+Some popular exception in Python are:
+
+
+**ZeroDivisionError**
+
+**IOError**
+
+
+```python
+# myfile = open("Somefile.txt", "r")
+# IOError: [Errno 2] No such file or directory: 'Somefile.txt'
+```
+
+
+```python
+myfile = open("Example.txt", "w")
+myfile.close()
+myfile = open("Example.txt", "r")
+#myfile.write("A")
+# IOError: File not open for writing
+```
+
+**ImportError**
+
+
+```python
+# import numpi
+# ImportError: No module named nump
+```
+
+**IndexError**
+
+
+```python
+S = [1, 2, 3, 4]
+G = {"a": 1, "b": 2}
+# S[4]
+# IndexError: list index out of range 
+# G[2]
+# KeyError: 2
+```
+
+**AttributeError**
+
+
+```python
+S = (1, 2, 3)
+# S.append(4)
+# AttributeError: 'tuple' object has no attribute 'append'
+```
+
+**TypeError**
+
+
+```python
+# int(1+0j)
+# TypeError: can't convert complex to int
+```
+
+**IndentationError**
+
+
+```python
+# def f(x):
+# return x**2
+# IndentationError: expected an indented block
+```
+
+Warnings are also exception but they do not stop the program running.
+
+## 4.2 User-defined exception type 
+
+We can also define ourselves a class as a new exception type, deriving from **Exception** or some known type of **Exception**. For example.
+
+
+```python
+class ApartmentError(Exception):
+    def __init__(self, notification):
+        self.notification = notification
+    
+    def __str__(self):
+        return self.notification
+```
+
+Then, we can raise an exception to notify the statement/function is not allowed, and stop the program.
+
+
+```python
+class ApartmentError(Exception):
+    def __init__(self, notification):
+        self.notification = notification
+    
+    def __str__(self):
+        return self.notification
+
+class Apartment:
+    def __init__(self, area, apart_type, rooms, location, construction_year):
+        self.area = area
+        if self.area <= 0:
+            raise ApartmentError("Area must be a positive number.")
+        self.apart_type = apart_type
+        if self.apart_type not in ("Studio", "T1", "T2", "T3", "T4", "T5"):
+            raise ApartmentError("Invalid apartment type.")
+        self.rooms = rooms
+        self.location = location
+        self.construction_year = construction_year
+    
+    def __str__(self):
+        return "Appartment(%d, %s, %s, %s, %d)" % (self.area, self.apart_type, self.rooms, self.location, self.construction_year)
+
+A1 = Apartment(20, "Studio", ["Living room"], 91120, 2001)
+print(A1)
+# A2 = Apartment(-20, "Studio", ["Living room"], 91120, 2001)
+# ApartmentError: Area must be a positive number.
+# A3 = Apartment(20, "F1", ["Living room"], 91120, 2001)
+# ApartmentError: Invalid apartment type.
+```
+
+    Appartment(20, Studio, ['Living room'], 91120, 2001)
+    
+
+## 4.3 Exception handling
+
+We can catch an exception an ignore it to prevent the program from stopping.
+
+
+```python
+def divide(a, b):
+    try:
+        print(a/b)
+    except ZeroDivisionError:
+        pass
+
+divide(4, 2)
+divide(2, 0)
+```
+
+    2
+    
+
+In the **except** paragraph, it is possible to define our own way to handle the exception.
+
+
+```python
+def divide(a, b):
+    try:
+        return a/b
+    except ZeroDivisionError:
+        return None
+
+print(divide(4, 2))
+print(divide(2, 0))
+```
+
+    2
+    None
+    
+
+# 5. An example: $\mathbf R^2$ geometry
 
 In this section we will look at some examples and understand how classes let us write clean codes to solve high school math exercises.
 
@@ -1017,11 +1189,16 @@ class Triangle:
         length_BC = B.getDistance(C)
         return 1./2 * length_AH * length_BC
 
+    #@staticmethod
+    #def area(some_triangle):
+    #    return some_triangle.getArea()
+
 ABC = Triangle(Point(0, 4), Point(3, 3), Point(-2, -2))
 print(ABC.getArea())
+#print(Triangle.area(ABC))
 ```
 
-    13.416407865
+    7.21110255093
     
 
 **Question 10:** Let A(0, 4), B(3, 3), C(-2, -2). Find the equation of the circle pass through $A, B, C$.
@@ -1032,6 +1209,8 @@ http://www.wolframalpha.com/widgets/view.jsp?id=b0d28dd78e48b231c995d69b91666803
 
 
 ```python
+import math
+
 class Point:
     def __init__(self, x, y):
         self.x = x
@@ -1057,7 +1236,7 @@ class Line:
     # Equation of a line: ax + by + c = 0
     def __init__(self, Point1, Point2):
         if Point1.x == Point2.x and Point1.y == Point2.y:
-            raise Error("Impossible to construct the line")
+            raise LineError("Impossible to construct the line because two points coincident")
         else:
             self.a = Point2.y - Point1.y
             self.b = Point1.x - Point2.x
@@ -1074,7 +1253,7 @@ class Line:
     
     def getIntersection(self, Line2):
         if self.isParallel(Line2):
-            return None
+            raise LineError("Impossible to find intersection between 2 parallel lines.")
         det1 = self.a * Line2.c - self.c * Line2.a
         det2 = self.c * Line2.b - self.b * Line2.c
         det3 = self.a * Line2.b - self.b * Line2.a
@@ -1089,12 +1268,20 @@ class Circle:
     def __str__(self):
         return "((x - (%f))^2 + (y - (%f))^2 = %f)" % (self.center.x, self.center.y, self.radius ** 2)
 
+class LineError(Exception):
+    def __init__(self, notification):
+        self.notification = notification
+    
+    def __str__(self):
+        return self.notification    
+
 A = Point(0, 4)
 B = Point(3, 3)
 C = Point(2, -2)
 BC = Line(B, C)
 AB = Line(A, B)
 AB_midpoint = A.getMidPoint(B)
+BC_midpoint = B.getMidPoint(C)
 BC_midperpend = BC_midpoint.getPerpendicularLineToLine(BC)
 AB_midperpend = AB_midpoint.getPerpendicularLineToLine(AB)
 O = BC_midperpend.getIntersection(AB_midperpend)
@@ -1110,4 +1297,37 @@ print(Outcircle)
     (0.625000, 0.875000)
     (3.1868871959954905, 3.1868871959954905, 3.1868871959954905)
     ((x - (0.625000))^2 + (y - (0.875000))^2 = 10.156250)
+    
+
+**Add some exception handling**
+
+
+```python
+A = Point(0, 4)
+B = Point(0, 3)
+C = Point(1, -2)
+# C = Point(0, 3)
+# C = Point(0, 1)
+try:
+    BC = Line(B, C)
+    AB = Line(A, B)
+    AB_midpoint = A.getMidPoint(B)
+    BC_midpoint = B.getMidPoint(C)
+    BC_midperpend = BC_midpoint.getPerpendicularLineToLine(BC)
+    AB_midperpend = AB_midpoint.getPerpendicularLineToLine(AB)
+    O = BC_midperpend.getIntersection(AB_midperpend)
+    print O
+    distance_OA = O.getDistance(A)
+    distance_OB = O.getDistance(B)
+    distance_OC = O.getDistance(C)
+    print(distance_OA, distance_OB, distance_OC)
+    Outcircle = Circle(O, distance_OA)
+    print(Outcircle)
+except LineError as e:
+    print(e)
+```
+
+    (15.500000, 3.500000)
+    (15.508062419270823, 15.508062419270823, 15.508062419270823)
+    ((x - (15.500000))^2 + (y - (3.500000))^2 = 240.500000)
     
