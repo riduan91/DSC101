@@ -28,11 +28,6 @@ Bạn cũng có thể tự copy các đoạn test phía dưới vào một file 
 from Polynomial_Solutions import *
 ```
 
-    [-3.000000000000875, -0.99999999999805023, 0.99999999999998601, 1.9999999999984515, 5.000000000000488]
-    [-0.15059909416362155, 4.1149690500729434]
-    [-2.30471181977384, 1.5403418638644175]
-    
-
 ### Bài 1. Khởi tạo đa thức.
 
 Ta biết rằng một đa thức hoàn toàn được xác định nếu các hệ số của nó được xác định. Giả sử ta biết các hệ số của nó và biểu diễn nó trong một list của Python.
