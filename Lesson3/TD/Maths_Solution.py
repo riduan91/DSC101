@@ -8,7 +8,10 @@ Created on Sat Jan 20 21:47:00 2018
 import numpy as np
 import scipy as sp
 from scipy import optimize
+from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
+from matplotlib import cm #For color
+from scipy.stats import norm, binom, poisson
 
 A = np.array([ [ 0, 1,  0,  0], 
                [ 1, 2, -2,  0],
@@ -92,9 +95,9 @@ def ex7():
     print( np.linalg.solve((A + np.eye(4)), v) )
 
 f = lambda x: 4 * np.sin(x) - np.cos(x) + 2 * np.exp(-3*x**2) + 1./x 
-F = lambda x, y: float((x - y)**2) / (x**2 + y**2)
+F = lambda x, y: ((x - y)**2.0) / (x**2 + y**2)
 
-F_rewrite = lambda x: float((x[0] - x[1])**2) / (x[0]**2 + x[1]**2)
+F_rewrite = lambda x: ((x[0] - x[1])**2.0) / (x[0]**2 + x[1]**2)
 #F = lambda x: x[0] + x[1]**2
 #F = lambda x, y: 1
 
@@ -120,6 +123,7 @@ def ex11():
     plt.plot(X, Y, linestyle="-")
     plt.title("y = f(x)")
     plt.legend("y = f(x)")
+    plt.grid()
     plt.show()
     for x0_estimated in [-9, -6, -3, 3, 6.48, 10]:
         print ( optimize.root(f, x0 = x0_estimated, method='broyden2').x )
@@ -132,6 +136,68 @@ def ex12():
     print("Local maxima: ")
     for x0_estimated in [-5, -0.5, 1, 8]:
         print ( optimize.minimize(lambda x: -f(x), x0 = x0_estimated, method='Nelder-Mead' ).x ) 
+
+#Exercise 13
+def ex13():    
+    X = np.arange(-5, 5, 0.1)
+    Y = np.arange(-5, 5, 0.1)    
+    X, Y = np.meshgrid(X, Y)
+    Z = F(X, Y) 
+          
+    CS = plt.contour(X, Y, Z, levels = [0.0, 0.5, 1, 1.5, 2])
+    plt.clabel(CS, fontsize = 10, colors='k')
+    plt.grid()
+    plt.show()
+    
+    ax = plt.gca(projection='3d')
+    surf = ax.plot_surface(X, Y, Z, cmap=cm.coolwarm,
+                       linewidth=0, antialiased=False)
+    plt.colorbar(surf)
+    
+    plt.show()
+
+#Exercise 14
+def ex14():
+    cons = ({'type': 'eq',
+             'fun' : lambda x: x[0] + x[1] - 5},)
+    
+    res = optimize.minimize(lambda x: -F_rewrite(x), [1, 1], constraints = cons)
+    print(res)
+
+#Exercise 15
+def ex15():
+    X = norm(2, np.sqrt(6))
+    print(X.cdf(5) - X.cdf(-1))
+    print(X.interval(0.9)[1] - 2 )
+
+#Exercise 16
+def ex16():
+    X = binom(10, 0.7)
+    print(X.pmf(8))
+    print(1 - X.cdf(7))
+    sample = X.rvs(1000)
+    plt.hist(sample, np.arange(0, 12, 1), normed = True)
+
+#Exercise 17
+def ex17():
+    X = poisson(1.5)
+    mu = X.mean()
+    sigma = X.std()
+    N = 1000
+    
+    samples = np.zeros((N, 1000))
+    for i in range(N):
+        samples[i] = X.rvs(1000)
+    
+    result = samples.sum(axis = 0)
+    normalized_result = (result - N * mu) / (np.sqrt(N) * sigma)
+        
+    x_range = np.arange(-5, 5, 0.2)
+    plt.hist(normalized_result, x_range, normed = True, label = "Normalized sum of Poissons")
+    Y = norm(0, 1)
+    plt.plot(x_range, Y.pdf(x_range), linewidth = 2, label = "N(0, 1)")
+    plt.legend(loc = "upper left", fontsize = 8)
+    plt.show()
     
 if __name__ == "__main__":
-    ex12()
+    ex1()

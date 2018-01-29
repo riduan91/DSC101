@@ -37,18 +37,29 @@ VIDEO_PREFIX = "video.vnexpress.net"
 CAT_URL = {}
 
 def prepare_stockage():
+    """
+        Exercise 1
+    """
     listdir = os.listdir(DATA_DIR)
     if TMP_DIR not in listdir:
         os.mkdir(DATA_DIR + TMP_DIR)
 
 def download_page(url):
+    """
+        Exercise 2
+    """
     return urllib.urlopen(url)
 
 def get_article_url(fromdate, todate, categories):
+    """
+        Do not modify
+    """
     article_urls = []
+    
     if categories == "all":
         for cat_name in CAT_ID.keys():
             article_urls += get_article_url(fromdate, todate, cat_name)
+            
     else:
         cat_name = categories
         print("Category %s" % cat_name)
@@ -69,9 +80,13 @@ def get_article_url(fromdate, todate, categories):
             has_next = next_page != None
             if has_next:
                 cat_url = "http://vnexpress.net" + next_page['href']
+                
     return article_urls
 
 def store_article_url(time_string_1, time_string_2, filename, categories = "all"):
+    """
+        Do not modify
+    """
     print("Searching for links of all articles between %s and %s, category %s..." % (time_string_1, time_string_2, categories))
     fromdate = int(time.mktime(time.strptime(time_string_1, "%d/%m/%y")))
     todate = int(time.mktime(time.strptime(time_string_2, "%d/%m/%y"))) + 24 * 60 * 60
@@ -82,13 +97,16 @@ def store_article_url(time_string_1, time_string_2, filename, categories = "all"
     f.close()
 
 def get_article_content(article):
+    """
+        Do not modify
+    """
     f = download_page(article).read()
     tree = BeautifulSoup(f)
     sidebar = tree.find('section', 'sidebar_1')
     title_news = sidebar.find('h1', 'title_news_detail').contents[0]
-    title_news = clean_title(title_news)
+    title_news = clean(title_news)
     short_intro = sidebar.find('h2', 'description').contents[0]
-    short_intro = clean_short_intro(short_intro)
+    short_intro = clean(short_intro)
     normal = sidebar.find_all('p', 'Normal')
     contents = []
     for content in normal:
@@ -101,12 +119,15 @@ def get_article_content(article):
                     continue
             strings.append(quasi_paragraph)
         string = " ".join(strings)
-        string = clean_content(string)
+        string = clean(string)
         if len(string) > 0:
             contents.append(string)
     return title_news, short_intro, contents        
 
 def store_articles_content(titlefile, datafile):
+    """
+        Do not modify
+    """
     f = open(DATA_DIR + titlefile, 'r')
     titles = f.read().split("\n")
     g = open(DATA_DIR + datafile, 'w')
@@ -117,6 +138,9 @@ def store_articles_content(titlefile, datafile):
     f.close()
 
 def partially_store_articles_content(title):
+    """
+        Do not modify
+    """
     try:
         print("Downloading %s", title)
         title_news, short_intro, contents = get_article_content(title)
@@ -131,20 +155,10 @@ def partially_store_articles_content(title):
         pass
         return ""
     
-def clean_title(string):
-    pattern = re.compile(r'[\n\t\r]')
-    string = pattern.sub("", string)
-    string = re.sub(' +', ' ', string)
-    if string[0] == ' ':
-        string = string[1:]
-    if string[-1] == ' ':
-        string = string[:-1]
-    return string
-
-def clean_short_intro(string):
-    return clean_title(string)
-   
-def clean_content(string):
+def clean(string):
+    """
+        Exercise 3
+    """
     pattern = re.compile(r'[\n\t\r]')
     string = pattern.sub("", string)
     string = re.sub(' +', ' ', string)
@@ -154,8 +168,9 @@ def clean_content(string):
         string = string[:-1]
     return string
 
-store_article_url("01/01/18", "31/01/18", "News_012018.txt", "THOI_SU")
-store_articles_content("News_012018.txt", "News_012018_content.txt")
+if __name__ == '__main__':
+    store_article_url("01/01/18", "31/01/18", "News_012018.txt", "THOI_SU")
+    store_articles_content("News_012018.txt", "News_012018_content.txt")
 
 
 """
