@@ -9,4 +9,5 @@ import sys
 
 if __name__ == "__main__":
     user = sys.argv[1]
-    print("Hello %s!" % user)
+    user2 = sys.argv[2]
+    print("Hello %s, %s!" % (user, user2))
