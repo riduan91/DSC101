@@ -39,6 +39,10 @@ Matv = np.matrix(v).transpose()
 I = np.identity(4)
 
 MatI = np.matrix(I)
+
+# Exercise 0
+def ex0():
+    print( "OK")
                 
 # Exercise 1
 def ex1():
@@ -199,5 +203,13 @@ def ex17():
     plt.legend(loc = "upper left", fontsize = 8)
     plt.show()
     
+Tests = [ex0, ex1, ex2, ex3, ex4, ex5, ex6, ex7, ex8, ex9, ex10, ex11, ex12, ex13, ex14, ex15, ex16, ex17]
+    
 if __name__ == "__main__":
-    ex1()
+    if len(sys.argv) != 2:
+        print "Please configure your test by Run -> Configure"
+    else:
+        for i in range(len(Tests) + 1):
+            if sys.argv[1] == "test_" + str(i):
+                Tests[i]()
+                break
