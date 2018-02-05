@@ -70,7 +70,7 @@ def get_article_url(fromdate, todate, categories):
             page_counter += 1
             print("Searching in page %d: %s" % (page_counter, cat_url))
             f = download_page(cat_url).read()
-            tree = BeautifulSoup(f)
+            tree = BeautifulSoup(f, "lxml")
             articles = tree.find('section', 'sidebar_1').find_all('h3', 'title_news')
             for article in articles:
                 href = article.find('a')['href']
