@@ -71,9 +71,7 @@ def getComponents(article):
     tree = BeautifulSoup(article, "lxml")
     sidebar = tree.find('section', 'sidebar_1')
     title_news = sidebar.find('h1', 'title_news_detail').contents[0]
-    #title_news = clean(title_news)
     short_intro = sidebar.find('h2', 'description').contents[0]
-    #short_intro = clean(short_intro)
     inside_content = sidebar.find_all('p', 'Normal')
     print title_news
     print short_intro
