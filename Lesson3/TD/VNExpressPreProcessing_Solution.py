@@ -146,11 +146,11 @@ def saveArticles(title_file, content_file, data_folder):
             article = downloadArticle(title)
             title_news, short_intro, contents = getComponents(article)
             res = ""
-            if title_news != None:
+            if title_news != None and short_intro != None and contents != None and len(contents) > 0:
                 res = title_news + "\t\t"
                 res += short_intro + "\t\t"
                 res += "\t".join(contents)
-            res += "\n"
+                res += "\n"
             g.write(res.encode("utf-8"))
         except:
             pass
@@ -162,10 +162,16 @@ def readContent(content_file, data_folder):
     # TODO
     return pd.read_csv(data_folder + "/" + content_file, header = None, sep="\t\t", engine="python")
 
+def getAuthor(content):
+    author = content[content.rfind("\t") + 1:]
+    if len(author) >= 20:
+        author = ""
+    return author
+
 def addAuthorColumn(articles_table):
     # Exercise 12
     # TODO
-    articles_table.insert(len(articles_table.columns), "author", map(lambda res: res[res.rfind("\t") + 1:], articles_table.iloc[:, 2]))
+    articles_table.insert(len(articles_table.columns), "author", map(lambda res: getAuthor(res), articles_table.iloc[:, 2]))
     return articles_table
 
 def getSimpleWordFrequency(articles_table):
@@ -182,4 +188,6 @@ def getSimpleWordFrequency(articles_table):
                 word_freq[word] = 1
             else:
                 word_freq[word] += 1
+    del(word_freq[""])
     return word_freq
+

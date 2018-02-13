@@ -12,6 +12,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 from matplotlib import cm #For color
 from scipy.stats import norm, binom, poisson
+import sys
 
 A = np.array([ [ 0, 1,  0,  0], 
                [ 1, 2, -2,  0],
