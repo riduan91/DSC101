@@ -199,7 +199,7 @@ class Game:
     O = 2
     HUMAN = 1
     MACHINE = 2 
-    NB_AUTOMATIC_GAMES = 100
+    NB_AUTOMATIC_GAMES = 1000
     
     def __init__(self, height, width, firstTurn, winNumber):
         """
