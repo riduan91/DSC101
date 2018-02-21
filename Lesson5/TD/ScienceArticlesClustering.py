@@ -9,6 +9,7 @@ import os, re, sys
 import pandas as pd
 DEFAULT_ENCODING = 'utf-8'
 from sklearn.cluster import KMeans
+import sklearn.mixture
 from scipy import sparse
 import numpy as np
 
@@ -186,7 +187,8 @@ def getImportantFeatures(global_frequency_file, lowerbound, upperbound):
     # Exercise 9
     # TODO
     data = pd.read_csv(global_frequency_file, sep=":", header=None)
-    features_list = data[(data[1] >= lowerbound) & (data[1] <= upperbound)][0]
+    # features_list = data[(data[1] >= lowerbound) & (data[1] <= upperbound)
+    features_list = data[(data[1] >= lowerbound) & (data[1] <= upperbound) & (data[0].str.slice(0, 1).str.isupper()) ][0]
     features_dict = {}
     for i, feature in enumerate(features_list):
         features_dict[feature] = i
@@ -217,8 +219,12 @@ def articlesToSparseVector(frequency_file, features_dict):
     row_position = []
     column_position = []
     values = []
+    titles = [""] * len(data)
     for i, line in enumerate(data):
-        content = line.split("\t\t")[1]
+        title_and_content = line.split("\t\t")
+        title = title_and_content[0]
+        titles[i] = title
+        content = title_and_content[1]
         words_and_freqs = content.split("\t")
         for waf in words_and_freqs:
             s = waf.split(":")
@@ -227,17 +233,21 @@ def articlesToSparseVector(frequency_file, features_dict):
                 row_position.append(i)
                 column_position.append(features_dict[word])
                 values.append(1)
-    return sparse.coo_matrix((values, (row_position, column_position)), shape=(len(data), len(features_dict)))
+    return titles, sparse.coo_matrix((values, (row_position, column_position)), shape=(len(data), len(features_dict)))
 
 def modelTrainedByKMeans(vectors, nb_cluster):
     # Exercice 12
     kmeans = KMeans(n_clusters=nb_cluster, random_state=0)
     kmeans.fit(vectors)
     return kmeans
+    #gmm = sklearn.mixture.GMM(n_components = nb_cluster, init_params = 'kmeans')
+    #gmm.fit(vectors.toarray())
+    #return gmm
 
 def predictByKMeans(model, vectors):
     # Exercise 13
     return model.predict(vectors)
+    #return model.predict(vectors.toarray())
 
 def getExplicativeFeatures(global_frequency_file, frequency_file, lowerbound, upperbound, var_lower_bound):
     # Exercise 14
@@ -253,16 +263,7 @@ def getExplicativeFeatures(global_frequency_file, frequency_file, lowerbound, up
 def getClusterCenters(model):
     # Exercise 14
     return model.cluster_centers_
-    
-def articleToTitles(frequency_file):
-    datafile = open(frequency_file, 'r')
-    data = datafile.read().split("\n")
-    titles = []
-    for i, line in enumerate(data):
-        title = line.split("\t\t")[0]
-        titles.append(title)
-    datafile.close()
-    return titles
+    #return model.means_
 
 def addArticleTitlesToCluster(titles, prediction):
     # Exercise 15
@@ -282,6 +283,17 @@ def getExplicatveFeaturesForClusters(model, explicative_features):
         A.append(sorted(zip(explicative_features.keys(), [centers[i, explicative_features[k]] for k in explicative_features.keys()]), key = lambda x: -x[1]))
     return A
 
-
-
-
+"""
+def getUncategorizedData(centers, prediction, title_and_vectors):
+    min_dist = len(prediction)
+    argmin_dist = 0
+    for i, center in enumerate(centers):
+        dist = np.linalg.norm(center)
+        if dist < min_dist:
+            argmin_dist = i
+            min_dist = dist
+    print argmin_dist
+    titles =  [title_and_vectors[0][i] for i in range(len(prediction)) if prediction[i] == argmin_dist]
+    X = [title_and_vectors[1][i] for i in range(len(prediction)) if prediction[i] == argmin_dist]
+    return titles, X
+"""
