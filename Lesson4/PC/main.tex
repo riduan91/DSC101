@@ -20,7 +20,7 @@
 
 \paragraph{}
 
-Giả sử $n$ là một số nguyên dương. Mỗi phần tử của $\mb Z / N\mb Z$ được biểu diễn bởi một số nguyên trong khoảng từ $0$ đến $N-1$. Các phép toán cộng, trừ, nhân, luỹ thừa hai phần tử $a$ và $b$ được thực hiện như với các số nguyên, nhưng lấy số dư khi chia kết quả cho $N$. Kí hiệu $n = \log_2 N$. 
+Giả sử $N$ là một số nguyên dương. Mỗi phần tử của $\mb Z / N\mb Z$ được biểu diễn bởi một số nguyên trong khoảng từ $0$ đến $N-1$. Các phép toán cộng, trừ, nhân, luỹ thừa hai phần tử $a$ và $b$ được thực hiện như với các số nguyên, nhưng lấy số dư khi chia kết quả cho $N$. Kí hiệu $n = \log_2 N$. 
 
 \begin{em}
 Chứng minh rằng:
@@ -32,7 +32,7 @@ Chứng minh rằng:
 \end{enumerate}
 \end{em}
 
-\paragraph{Nghịch đảo của một phần tử. } Một phần tử $a$ được gọi là nguyên tố cùng nhau với $N$ nếu với tư cách số nguyên, ước chung lớn nhất của $a$ và $N$ là 1. Trong trường hợp đó, tồn tại một phần tử $b \in \mb Z/ N \mb Z$ sao cho $ab = 1$ trong $\mb Z \in N \mb Z$. Ta gọi nó là \textbf{nghịch đảo} của $a$, kí hiệu $a^{-1}$ (dễ thấy tồn tại duy nhất trong $\mb Z / n\mb Z$).\\
+\paragraph{Nghịch đảo của một phần tử. } Một phần tử $a$ được gọi là nguyên tố cùng nhau với $N$ nếu với tư cách số nguyên, ước chung lớn nhất của $a$ và $N$ là 1. Trong trường hợp đó, tồn tại một phần tử $b \in \mb Z/ N \mb Z$ sao cho $ab = 1$ trong $\mb Z \in N \mb Z$. Ta gọi nó là \textbf{nghịch đảo} của $a$, kí hiệu $a^{-1}$ (dễ thấy tồn tại duy nhất trong $\mb Z /N\mb Z$).\\
 
 Xét thuật toán \textbf{gcd} dưới đây:
 
@@ -74,7 +74,7 @@ Từ quan sát đó, thuật toán sau được áp dụng trong thực tế đ�
 
 \begin{itemize}
     \item Lấy $k$ số tự nhiên bất kì $a_1, \ldots, a_k$ nhỏ hơn $x$.
-    \item Nếu $a_i^{x-1} \equiv 1 (\mod x)$ với tất cả $i = 1, \ldots, k$, trả lời "nguyên tố". Nếu không, trả lời "hợp số".
+    \item Nếu $x$ không nằm trong danh sách các số Carmichael (danh sách này đã biết và có rất ít số, có độ lớn $O(1)$, đồng thời $a_i^{x-1} \equiv 1 (\mod x)$ với tất cả $i = 1, \ldots, k$, trả lời "nguyên tố". Nếu không, trả lời "hợp số".
 \end{itemize}
 
 \textit{Chứng minh rằng độ phức tạp của thuật toán trên là $O(n^3\cdot k)$ với $n = \log_2 N$. }
