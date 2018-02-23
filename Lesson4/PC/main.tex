@@ -150,7 +150,7 @@ RSA thuộc loại mật mã phi đối xứng vì mã hoá bằng một khoá $
 Trong bài giảng ta đã tìm hiểu về mảng động. Dưới đây ta minh hoạ 2 cơ chế cho quá trình extension-shrinkage.
 
 \subsection{Cơ chế 1}
-Giả sử một mảng động được tạo như sau: ban đầu có 1 ô nhớ và không lưu giá trị nào. Số ô nhớ của mảng động được gọi là size của mảng động đó. Sau một phép \textbf{append} nào đó, nếu mọi ô nhớ đều đã được dùng thì phép \textbf{append} này sẽ tăng số ô nhớ lên gấp đôi (tức là tạo ra $N$ ô nhớ mới nếu số ô nhớ hiện tại đang là $N$), và sự thêm này có thời gian chạy $\geq c_1 N$, $\leq c_2 N$ ($c_1, c_2$ là các hằng số). Ngược lại nếu sau một phép $\textbf{pop}$, chương trình thấy mảng đang dùng ít hơn hoặc bằng một nửa số ô nhớ (tức số ô nhớ được dùng $\leq N/2$), thì phép \textbf{pop} đó sẽ xoá đi một nửa số ô nhớ, và phép xoá này có thời gian chạy $\geq c_1 N$, $\leq c_2 N$. Ngoài ra, nếu không phải các trường hợp này, thì các phép \textbf{append} và \textbf{pop} không làm thay đổi size của mảng động, và chúng có thời gian chạy $\geq c_1$, $\leq c_2$. 
+Giả sử một mảng động được tạo như sau: ban đầu có 1 ô nhớ và không lưu giá trị nào. Số ô nhớ của mảng động được gọi là size của mảng động đó. Sau một phép \textbf{append} nào đó, nếu mọi ô nhớ đều đã được dùng thì phép \textbf{append} này sẽ tăng số ô nhớ lên gấp đôi (tức là tạo ra $N$ ô nhớ mới nếu số ô nhớ hiện tại đang là $N$), và sự thêm này có thời gian chạy $\geq c_1 N$, $\leq c_2 N$ ($c_1, c_2$ là các hằng số). Ngược lại nếu sau một phép $\textbf{pop}$, chương trình thấy mảng đang dùng ít hơn một nửa số ô nhớ (tức số ô nhớ được dùng $< N/2$), thì phép \textbf{pop} đó sẽ xoá đi một nửa số ô nhớ, và phép xoá này có thời gian chạy $\geq c_1 N$, $\leq c_2 N$. Ngoài ra, nếu không phải các trường hợp này, thì các phép \textbf{append} và \textbf{pop} không làm thay đổi size của mảng động, và chúng có thời gian chạy $\geq c_1$, $\leq c_2$. 
 \begin{em}
     \begin{enumerate}
         \item Chứng minh rằng nếu ta gọi liên tiếp nhiều phép toán, mỗi phép là \textbf{append} và \textbf{pop} theo thứ tự ngẫu nhiên bất kì, (ví dụ \textbf{append}, \textbf{append}, \textbf{pop}, \textbf{pop}, \textbf{append}, $\ldots$) thì size của mảng luôn là một luỹ thừa của 2.
@@ -160,7 +160,7 @@ Giả sử một mảng động được tạo như sau: ban đầu có 1 ô nh�
 \end{em}
 
 \subsection{Cơ chế 2}
-Cũng như cơ chế 1, giả sử một mảng động được tạo như sau: ban đầu có 1 ô nhớ và không lưu giá trị nào. Số ô nhớ của mảng động được gọi là size của mảng động đó. Nhưng bây giờ, mỗi khi một phép \textbf{append} nhận thấy mọi ô nhớ đã được sử dụng, thì nó sẽ tăng thêm $\lceil N/4 \rceil$ ô nhớ cho mảng động, và việc thêm này có thời gian chạy $\geq c_1 N$, $\leq c_2 N$ ($c_1, c_2$ là các hằng số). Ngược lại nếu sau khi một phép \textbf{pop} được gọi dẫn đến số ô nhớ được dùng ít hơn hoặc bằng một phần tư số ô nhớ hiện có (tức số ô nhớ được dùng $\leq N/4$), thì chương trình sẽ xoá đi một nửa số ô nhớ, và việc xoá này có thời gian chạy $\geq c_1 N$, $\leq c_2 N$. Ngoài ra, nếu không phải các trường hợp này, thì các phép \textbf{append} và \textbf{pop} có thời gian chạy là  $\geq c_1$, $\leq c_2$. \\
+Cũng như cơ chế 1, giả sử một mảng động được tạo như sau: ban đầu có 1 ô nhớ và không lưu giá trị nào. Số ô nhớ của mảng động được gọi là size của mảng động đó. Nhưng bây giờ, mỗi khi một phép \textbf{append} nhận thấy mọi ô nhớ đã được sử dụng, thì nó sẽ tăng thêm $\lceil N/4 \rceil$ ô nhớ cho mảng động, và việc thêm này có thời gian chạy $\geq c_1 N$, $\leq c_2 N$ ($c_1, c_2$ là các hằng số). Ngược lại nếu sau khi một phép \textbf{pop} được gọi dẫn đến số ô nhớ được dùng ít hơn một phần tư số ô nhớ hiện có (tức số ô nhớ được dùng $< N/4$), thì chương trình sẽ xoá đi một nửa số ô nhớ, và việc xoá này có thời gian chạy $\geq c_1 N$, $\leq c_2 N$. Ngoài ra, nếu không phải các trường hợp này, thì các phép \textbf{append} và \textbf{pop} có thời gian chạy là  $\geq c_1$, $\leq c_2$. \\
 
 \begin{em}
         Chứng minh rằng nếu ta gọi liên tiếp nhiều phép toán, mỗi phép là \textbf{append} và \textbf{pop} theo thứ tự ngẫu nhiên bất kì, (ví dụ \textbf{append}, \textbf{append}, \textbf{pop}, \textbf{pop}, \textbf{append}, $\ldots$) thì thời gian thực hiện trung bình một phép \textbf{append} hay \textbf{pop} là $O(1)$. 
@@ -170,28 +170,28 @@ Cũng như cơ chế 1, giả sử một mảng động được tạo như sau:
 
 (Chỉ làm bài tập này khi bạn đã đọc phần 6, Sorting của bài giảng).
 
-Trong bài giảng ta đã biết kiểu dữ liệu Hash Map được xây dựng để lưu các bộ từ khoá - giá trị $(k, V)$. Chúng được sử dụng trong các trường hợp ta thường xuyên làm việc với các phép toán tìm $d[k]$, gán $d[k] = V$, tìm tất cả các khoá $d.keys()$.
+Trong bài giảng ta đã biết kiểu dữ liệu Hash Map được xây dựng để lưu các bộ từ khoá - giá trị $(k, V)$. Chúng được sử dụng trong các trường hợp ta thường xuyên làm việc với các phép toán tìm \textbf{d}[$k$], gán \textbf{d}[$k$] $=V$, tìm tất cả các khoá \textbf{d.keys()}.
 
 Mục tiêu của bài này là xây dựng một kiểu dữ liệu khác Hash Map để làm việc với các tình huống khác.
 
 Giả sử ta có dữ liệu gồm các bộ $(k, V)$ và cần làm việc với các phép toán:
 \begin{itemize}
-    \item Cho $k_m$, phép toán $getLowerBound(k_m)$ tìm giá trị $data[k]$ ứng với khoá $k$ nhỏ nhất thoả mãn $k \geq k_m$
-    \item Cho $k_M$, phép toán $getUpperBound(k_M)$ tìm giá trị $data[k]$ ứng với khoá $k$ lớn nhất thoả mãn $k \leq k_M$. 
-    \item Cho $k_m, k_M$, phép toán $getRange(k_m, k_M)$ tìm giá trị $data[k]$ ứng với tất cả các khoá $k$ thoả mãn $k_m \leq k \leq k_M$.
-    \item Cho $k, V$, phép toán $put(k, V)$ cho phép thêm $(k, V)$ vào dữ liệu nếu từ khoá $k$ chưa có trong dữ liệu.
+    \item Cho $k_m$, phép toán $\textbf{getLowerBound}(k_m)$ tìm giá trị $\textbf{data}[k]$ ứng với khoá $k$ nhỏ nhất thoả mãn $k \geq k_m$
+    \item Cho $k_M$, phép toán $\textbf{getUpperBound}(k_M)$ tìm giá trị $\textbf{data}[k]$ ứng với khoá $k$ lớn nhất thoả mãn $k \leq k_M$. 
+    \item Cho $k_m, k_M$, phép toán $\textbf{getRange}(k_m, k_M)$ tìm giá trị $\textbf{data}[k]$ ứng với tất cả các khoá $k$ thoả mãn $k_m \leq k \leq k_M$.
+    \item Cho $k, V$, phép toán $\textbf{put}(k, V)$ cho phép thêm $(k, V)$ vào dữ liệu nếu từ khoá $k$ chưa có trong dữ liệu.
 
 \end{itemize}{}
 
  \begin{em}
 	\begin{enumerate}
-        \item Xét bài toán sau đây: cho dữ liệu của một hãng hàng không gồm $N$ bộ dạng $(k, V)$ trong đó $k$ là một xâu dạng ngày-tháng-năm-giờ-phút, YYYYMMDDmmHH (ví dụ 201801311513 chỉ 13h15 ngày 31/01/2018 giờ GMT), và $V$ là tên một chuyến bay khởi hành tại thời điểm đó đi kèm với số hành khách đã đặt vé trên chuyến bay đó, ví dụ (VN311, 89). Giả sử ta muốn tìm tổng số lượt đặt vé trên tất cả các chuyến bay trong một chuỗi ngày liên tiếp bất kì. Thông qua hàm nào trên đây ta có thể giải quyết bài toán?
+        \item Xét bài toán sau đây: cho dữ liệu của một hãng hàng không gồm $N$ bộ dạng $(k, V)$ trong đó $k$ là một xâu dạng ngày-tháng-năm-giờ-phút, YYYYMMDDHHmm (ví dụ 201801311513 chỉ 15h13 ngày 31/01/2018 giờ GMT), và $V$ là tên một chuyến bay khởi hành tại thời điểm đó đi kèm với số hành khách đã đặt vé trên chuyến bay đó, ví dụ (VN311, 89). Giả sử ta muốn tìm tổng số lượt đặt vé trên tất cả các chuyến bay trong một chuỗi ngày liên tiếp bất kì. Thông qua hàm nào trên đây ta có thể giải quyết bài toán?
 		
 		\item Nếu lưu dữ liệu về chuyến bay trên bằng Hash Map với từ khoá $k$ và giá trị $V$, chứng minh việc nhập dữ liệu gồm $N$ bộ trên có thể được thực hiện trong thời gian $O(N)$, và việc giải bài toán ở câu 1 (tính tổng sõ lượt đặt vé giữa hai ngày bất kì) có thể được giải quyết trong thời gian $O(N)$.
 	\end{enumerate}
 \end{em}
 
-Trên thực tế, $O(N)$ là độ phức tạp trung bình tốt nhất để thực hiện các hàm $getLowerBound(k_m)$, $getUpperBound(k_M)$, $getRange(k_m, k_M)$, $put(k, V)$ nói trên. Độ phức tạp này vẫn khá lớn và ta cần tìm cách lưu dữ liệu tốt hơn.
+Trên thực tế, $O(N)$ là độ phức tạp trung bình tốt nhất để thực hiện các hàm $\textbf{getLowerBound}(k_m)$, $\textbf{getUpperBound}(k_M)$, $\textbf{getRange}(k_m, k_M)$, $\textbf{put}(k, V)$ nói trên. Độ phức tạp này vẫn khá lớn và ta cần tìm cách lưu dữ liệu tốt hơn.
 
 Bây giờ ta muốn xây dựng một kiểu dữ liệu Sorted Map lưu $N$ bộ $(k, V)$ như sau:
 \begin{itemize}
@@ -206,11 +206,11 @@ Sử dụng Sorted Map, chứng minh:
 	    \setcounter{enumi}{2}
         \item Việc nhập dữ liệu gồm $N$ bộ trên có thể được thực hiện trong thời gian $O(N \log N)$.
 		
-		\item $getLowerBound(k_m)$, $getUpperBound(k_M)$ có thể được thực hiện trong $O(\log N)$.
+		\item $\textbf{getLowerBound}(k_m)$, $\textbf{getUpperBound}(k_M)$ có thể được thực hiện trong $O(\log N)$.
 		
-		\item Việc cập nhật $put(k, V)$ khi $k$ đã có trong dữ liệu có thể được thực hiện trong $O(\log N)$. Nếu chưa tồn tại, trường hợp worst case của $put(k, V)$ được thực hiện trong $O(N)$.
+		\item Việc cập nhật $\textbf{put}(k, V)$ khi $k$ đã có trong dữ liệu có thể được thực hiện trong $O(\log N)$. Nếu chưa tồn tại, trường hợp worst case của $\textbf{put}(k, V)$ được thực hiện trong $O(N)$.
 		
-		\item $getRange(k_m, k_M)$ được thực hiện trong $O(\log N + S)$, trong đó $S$ là số cặp $(k, V)$ trong kết quả (tức $k_m \leq k \leq k_M$). Đây cũng là độ phức tạp của bài toán tính tổng lượt vé được đặt nêu trên.
+		\item $\textbf{getRange}(k_m, k_M)$ được thực hiện trong $O(\log N + S)$, trong đó $S$ là số cặp $(k, V)$ trong kết quả (tức $k_m \leq k \leq k_M$). Đây cũng là độ phức tạp của bài toán tính tổng lượt vé được đặt nêu trên.
 	\end{enumerate}
 \end{em}
 \end{document}
