@@ -74,7 +74,7 @@ Từ quan sát đó, thuật toán sau được áp dụng trong thực tế đ�
 
 \begin{itemize}
     \item Lấy $k$ số tự nhiên bất kì $a_1, \ldots, a_k$ nhỏ hơn $x$.
-    \item Nếu $x$ không nằm trong danh sách các số Carmichael (danh sách này đã biết và có rất ít số, có độ lớn $O(1)$, đồng thời $a_i^{x-1} \equiv 1 (\mod x)$ với tất cả $i = 1, \ldots, k$, trả lời "nguyên tố". Nếu không, trả lời "hợp số".
+    \item Nếu $x$ không nằm trong danh sách các số Carmichael (danh sách này đã biết và có rất ít số, có độ lớn $O(1)$), đồng thời $a_i^{x-1} \equiv 1 (\mod x)$ với tất cả $i = 1, \ldots, k$, trả lời "nguyên tố". Nếu không, trả lời "hợp số".
 \end{itemize}
 
 \textit{Chứng minh rằng độ phức tạp của thuật toán trên là $O(n^3\cdot k)$ với $n = \log_2 N$. }
@@ -88,7 +88,7 @@ $$
 \lim\limits_{N\to \infty} \frac{\pi(N)}{N/\ln N} = 1 
 $$
 
-Hay $\pi(N)$ sẽ xấp xỉ $x/\ln(N)$. Từ đó chứng minh được nếu lấy ngẫu nhiên một số tự nhiên không vượt quá $N$ thì kì vọng số lần thử để số được lấy là nguyên tố là $O(\ln N)$.
+Hay $\pi(N)$ sẽ xấp xỉ $N/\ln(N)$. Từ đó chứng minh được nếu lấy ngẫu nhiên một số tự nhiên không vượt quá $N$ thì kì vọng số lần thử để số được lấy là nguyên tố là $O(\ln N)$.
 
 Từ quan sát đó, trên thực tế người ta dùng thuật toán \textit{thử và sai} sau đây để phát sinh (generate) một số nguyên tố không vượt quá $N$.:
 
@@ -107,7 +107,7 @@ Giả sử Alice muốn gửi một văn bản $m$ cho Bob. Văn bản có thể
 
 \begin{itemize}
     \item Bước 1. Bob, một cách bí mật, chọn hai số nguyên tố $p, q \leq \sqrt{N}$ ngẫu nhiên có dạng $3k + 2$, sau đó tính $S = pq$.
-    \item Bước 2. Bob chọn $e=3$, tính nghịch đảo $d$ của $e$ theo modulo $(p-1)(q-1)$. $e=3$ được gọi là khoá công khai (public key), $d$ được gọi là khoá bí mật.
+    \item Bước 2. Bob chọn $e=3$, tính nghịch đảo $d$ của $e$ theo modulo $(p-1)(q-1)$. $e=3$ được gọi là khoá công khai (public key), $d$ được gọi là khoá bí mật (private key).
     \item Bước 3. Bob gửi $e$ và $S$ cho Alice.
     \item Bước 4. Alice nhận được $e$ và $S$. Alice tính $f(m) = m^e$, $(\mod S)$ và gửi $f(m)$ cho Bob.
     \item Bước 5. Bob tính $g(m) = f(m)^d$, $(\mod S)$, đó chính là văn bản ban đầu.
@@ -128,7 +128,9 @@ Giả sử Alice muốn gửi một văn bản $m$ cho Bob. Văn bản có thể
     \end{enumerate}
 \end{em}
 
-Quy trình mã hoá thông qua khoá $e$ và giải mã thông qua khoá $d$ nêu trên được gọi là RSA (Rivest–Shamir–Adleman). Nó thuộc loại mật mã phi đối xứng vì mã hoá bằng một khoá $e$ và giải mã bằng một khoá $d$ khác, và việc tính $d$ từ $e$ không dễ dàng.
+Quy trình mã hoá thông qua khoá $e$ và giải mã thông qua khoá $d$ nêu trên được gọi là RSA (Rivest–Shamir–Adleman). Các bước thực hiện như trên, khoá $d$ và $e$ có thể được tái sử dụng nhiều lần. Không nhất thiết chọn $e=3$, ví dụ ta có thể chọn $p, q$ là các số nguyên tố không có dạng $5k +1$, rồi lấy $e=5$.
+
+RSA thuộc loại mật mã phi đối xứng vì mã hoá bằng một khoá $e$ và giải mã bằng một khoá $d$ khác, và việc tính $d$ từ $e$ không dễ dàng.
 
 \section{Các thuật toán trên array}
 
@@ -139,14 +141,16 @@ Quy trình mã hoá thông qua khoá $e$ và giải mã thông qua khoá $d$ nê
         \item (*) Mô tả một thuật toán tìm $k$ phần tử lớn nhất trong một list $A$ có $N$ phần tử trong thời gian $O(N\log k)$. (Bạn cần đọc phần 6, Sorting của bài giảng để làm bài này)
         \item Cho hai list $A, B$ đều chứa $N$ phần tử. Mô tả một thuật toán kết luận xem có phần tử $a$ nào thuộc cả hai list không. (Thuật toán tốt cần có độ phức tạp $O(N \log N)$)
         \item Cho ba list $A, B, C$ đều chứa $N$ phần tử. Mô tả một thuật toán kết luận xem có phần tử $a$ nào thuộc cả ba list không. (Thuật toán tốt cần có độ phức tạp $O(N \log N)$)
-        \item Cho ba list $A, B, C$ đều chứa $N$ số nguyên, $k$ là một số nguyên. Mô tả một thuật toán kết luận xem có ba phần tử $a, b, c$ nào lần lượt thuộc các list trên mà tổng của chúng bằng $k$. (Thuật toán tốt cần có độ phức tạp $O(N^2)$)
+        \item Cho ba list $A, B, C$ đều chứa $N$ số nguyên, $k$ là một số nguyên. Mô tả một thuật toán kết luận xem có ba phần tử $a, b, c$ nào lần lượt thuộc các list trên mà tổng của chúng bằng $k$ không. (Thuật toán tốt cần có độ phức tạp $O(N^2)$)
     \end{enumerate}
 \end{em}
 
 
 \section{Dynamic Array - Mảng động}
+Trong bài giảng ta đã tìm hiểu về mảng động. Dưới đây ta minh hoạ 2 cơ chế cho quá trình extension-shrinkage.
+
 \subsection{Cơ chế 1}
-Giả sử một mảng động được tạo như sau: ban đầu có 1 ô nhớ và không lưu giá trị nào. Số ô nhớ của mảng động được gọi là size của mảng động đó. Mỗi khi mọi ô nhớ đều đã được dùng và một phép \textbf{append} được gọi, thì chương trình sẽ tăng số ô nhớ lên gấp đôi (tức là tạo ra $N$ ô nhớ mới nếu số ô nhớ hiện tại đang là $N$), và sự thêm này có thời gian chạy $\geq c_1 N$, $\leq c_2 N$ ($c_1, c_2$ là các hằng số). Ngược lại nếu mảng đang dùng ít hơn hoặc bằng một nửa số ô nhớ (tức số ô nhớ được dùng $\leq N/2$) mà một phép \textbf{pop} được gọi, thì chương trình sẽ xoá đi một nửa số ô nhớ trống bằng một quy trình có thời gian chạy $\geq c_1 N$, $\leq c_2 N$. Ngoài ra, nếu không phải các trường hợp này, thì các phép \textbf{append} và \textbf{pop} có thời gian chạy $\geq c_1$, $\leq c_2$. 
+Giả sử một mảng động được tạo như sau: ban đầu có 1 ô nhớ và không lưu giá trị nào. Số ô nhớ của mảng động được gọi là size của mảng động đó. Sau một phép \textbf{append} nào đó, nếu mọi ô nhớ đều đã được dùng thì phép \textbf{append} này sẽ tăng số ô nhớ lên gấp đôi (tức là tạo ra $N$ ô nhớ mới nếu số ô nhớ hiện tại đang là $N$), và sự thêm này có thời gian chạy $\geq c_1 N$, $\leq c_2 N$ ($c_1, c_2$ là các hằng số). Ngược lại nếu sau một phép $\textbf{pop}$, chương trình thấy mảng đang dùng ít hơn hoặc bằng một nửa số ô nhớ (tức số ô nhớ được dùng $\leq N/2$), thì phép \textbf{pop} đó sẽ xoá đi một nửa số ô nhớ trống, và phép xoá này có thời gian chạy $\geq c_1 N$, $\leq c_2 N$. Ngoài ra, nếu không phải các trường hợp này, thì các phép \textbf{append} và \textbf{pop} không làm thay đổi size của mảng động, và chúng có thời gian chạy $\geq c_1$, $\leq c_2$. 
 \begin{em}
     \begin{enumerate}
         \item Chứng minh rằng nếu ta gọi liên tiếp nhiều phép toán, mỗi phép là \textbf{append} và \textbf{pop} theo thứ tự ngẫu nhiên bất kì, (ví dụ \textbf{append}, \textbf{append}, \textbf{pop}, \textbf{pop}, \textbf{append}, $\ldots$) thì size của mảng luôn là một luỹ thừa của 2.
@@ -156,7 +160,7 @@ Giả sử một mảng động được tạo như sau: ban đầu có 1 ô nh�
 \end{em}
 
 \subsection{Cơ chế 2}
-Cũng như cơ chế 1, giả sử một mảng động được tạo như sau: ban đầu có 1 ô nhớ và không lưu giá trị nào. Số ô nhớ của mảng động được gọi là size của mảng động đó. Nhưng bây giờ, mỗi khi mọi ô nhớ đều đã được dùng và một phép \textbf{append} được gọi, thì chương trình sẽ tăng thêm $\lceil N/4 \rceil$ ô nhớ cho mảng động, và việc thêm này có thời gian chạy $\geq c_1 N$, $\leq c_2 N$ ($c_1, c_2$ là các hằng số). Ngược lại nếu mảng đang dùng ít hơn hoặc bằng một phần tư số ô nhớ (tức số ô nhớ được dùng $\leq N/4$) mà một phép \textbf{pop} được gọi, thì chương trình sẽ xoá đi một nửa số ô nhớ trống bằng một quy trình có thời gian chạy $\geq c_1 N$, $\leq c_2 N$. Ngoài ra, nếu không phải các trường hợp này, thì các phép \textbf{append} và \textbf{pop} có thời gian chạy là  $\geq c_1$, $\leq c_2$. \\
+Cũng như cơ chế 1, giả sử một mảng động được tạo như sau: ban đầu có 1 ô nhớ và không lưu giá trị nào. Số ô nhớ của mảng động được gọi là size của mảng động đó. Nhưng bây giờ, mỗi khi một phép \textbf{append} nhận thấy mọi ô nhớ đã được sử dụng, thì nó sẽ tăng thêm $\lceil N/4 \rceil$ ô nhớ cho mảng động, và việc thêm này có thời gian chạy $\geq c_1 N$, $\leq c_2 N$ ($c_1, c_2$ là các hằng số). Ngược lại nếu sau khi một phép \textbf{pop} được gọi dẫn đến số ô nhớ được dùng ít hơn hoặc bằng một phần tư số ô nhớ hiện có (tức số ô nhớ được dùng $\leq N/4$), thì chương trình sẽ xoá đi một nửa số ô nhớ, và việc xoá này có thời gian chạy $\geq c_1 N$, $\leq c_2 N$. Ngoài ra, nếu không phải các trường hợp này, thì các phép \textbf{append} và \textbf{pop} có thời gian chạy là  $\geq c_1$, $\leq c_2$. \\
 
 \begin{em}
         Chứng minh rằng nếu ta gọi liên tiếp nhiều phép toán, mỗi phép là \textbf{append} và \textbf{pop} theo thứ tự ngẫu nhiên bất kì, (ví dụ \textbf{append}, \textbf{append}, \textbf{pop}, \textbf{pop}, \textbf{append}, $\ldots$) thì thời gian thực hiện trung bình một phép \textbf{append} hay \textbf{pop} là $O(1)$. 
