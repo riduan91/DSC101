@@ -166,7 +166,7 @@ Cũng như cơ chế 1, giả sử một mảng động được tạo như sau:
         Chứng minh rằng nếu ta gọi liên tiếp nhiều phép toán, mỗi phép là \textbf{append} và \textbf{pop} theo thứ tự ngẫu nhiên bất kì, (ví dụ \textbf{append}, \textbf{append}, \textbf{pop}, \textbf{pop}, \textbf{append}, $\ldots$) thì thời gian thực hiện trung bình một phép \textbf{append} hay \textbf{pop} là $O(1)$. 
 \end{em}
 
-\section{(*) Thiết kế kiểu dữ liệu: Sorted Map}
+\section{Thiết kế kiểu dữ liệu: Sorted Map}
 
 (Chỉ làm bài tập này khi bạn đã đọc phần 6, Sorting của bài giảng).
 
@@ -213,4 +213,22 @@ Sử dụng Sorted Map, chứng minh:
 		\item $\textbf{getRange}(k_m, k_M)$ được thực hiện trong $O(\log N + S)$, trong đó $S$ là số cặp $(k, V)$ trong kết quả (tức $k_m \leq k \leq k_M$). Đây cũng là độ phức tạp của bài toán tính tổng lượt vé được đặt nêu trên.
 	\end{enumerate}
 \end{em}
+
+\section{Regular Expressions}
+
+Viết các biểu thức chính quy (regular expression) biểu diễn các đối tượng sau đây:
+
+ \begin{em}
+	\begin{enumerate}
+        \item Giờ phút dưới dạng \textbf{HH:mm} (\textbf{HH} từ 00 đến 23)
+        \item Một địa chỉ email (một string luôn có dấu @ nằm giữa hai dãy kí tự)
+        \item Tên tài khoản của một người (từ 3 đến 16 chữ cái, gồm các chữ cái in hoa hoặc thường, chữ số, dấu "-" hoặc "\_".
+        \item Một số điện thoại viết liền (1 dãy chữ số hoặc kí tự "+" nối sau một dãy chữ số, giữa các chữ số không có dấu gì khác, dài ít nhất 3 kí tự)
+        \item Một số nguyên dương (viết ở hệ thập phân).
+        \item Một số nguyên âm (viết ở hệ thập phân).
+        \item Một số nguyên (viết ở hệ thập phân).
+	\end{enumerate}
+\end{em}
+
+Bạn có thể dùng Python để kiểm tra các biểu thức của mình.
 \end{document}

@@ -1,0 +1,79 @@
+For which of the following tasks can we expect that the problem of "dimension hopping" will occur (given that the data is input correctly)? Check all that apply.
+
+
++ Determining whether a wave has high frequency or low frequency. The input is a set of time values along with their corresponding vertical displacements.
+
+
+- Predicting the next word in a sequence given the previous 3 words.
+
+
+- Estimating the risk that a patient will develop heart disease given their age, weight, blood pressure, and cholesterol level.
+
+
++ Determining whether a given image shows a bike or a car. The bike or car might appear anywhere in the image. The input is the whole set of pixels for the image.
+
+
+
+- h1=0.881, h2=0.982, h3=0.982, h4=1.000
+
+- h1=0.982, h2=0.881, h3=1.000, h4=0.982
+
+h1=0.982, h2=0.982, h3=0.982, h4=0.982
+
+h1=0.982, h2=1.000, h3=0.881, h4=0.982
+
+
+- w1=1, w2=1, w3=1, and hpool is a logistic neuron.
+
+
+w1=1, w2=1, w3=1, and hpool is a linear neuron.
+
+
+w1=13, w2=13, w3=13, and hpool is a linear neuron.
+
+
+- w1=13, w2=13, w3=13, and hpool is a logistic neuron.
+
+
++ Yes: the network loses the knowledge of the location at which a context word occurs, and that is valuable knowledge.
+
+
+No: the new model after weight tying is an example of a convolutional neural network, and these are more powerful than a non-convolutional network because they are invariant to small transformations in the data.
+
+
+Yes: weight tying only makes sense when we are working with images.
+
+
+No: this method is an appropriate solution in that it will reduce the number of parameters and therefore always improve generalization.
+
+
+- ∂E∂wtied=−(t−y)(u1h1(1−h1)x1+u2h2(1−h2)x3)
+
+∂E∂wtied=−2(t−y)(u2h2(1−h2)x2)
+
++ ∂E∂wtied=−(t−y)[u1h1(1−h1)+u2h2(1−h2)]x2
+
+∂E∂wtied=−2(t−y)(u1h1(1−h1)x2)
+
+Whether Claire is right or not depends largely on the type of neural network that she has in mind. Which of the following neural networks will be at a disadvantage because of Brian's mistake? Check all that apply.
+
+
+- A feed-forward neural network with no hidden layer and logistic units (and no convolution).
+
+
+- A feed-forward neural network with no hidden layer and linear units (and no convolution).
+
+
++ A convolutional neural network where the size of each weight filter is 10 x 10.
+
+
++ A convolutional neural network where the size of each weight filter is 8 x 8.
+
+
+
+For the training case with that "3" input image, what is the output y1,y2,y3,y4 of each of the four hidden units?
+
+
+y1=4, y2=2, y3=8, y4=4
+
++ y1=4, y2=8, y3=2, y4=4
