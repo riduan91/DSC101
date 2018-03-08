@@ -8,7 +8,8 @@ Created on Tue Feb 06 15:28:46 2018
 import os, re, sys
 import pandas as pd
 DEFAULT_ENCODING = 'utf-8'
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans, AgglomerativeClustering
+from sklearn import preprocessing
 import sklearn.mixture
 from scipy import sparse
 import numpy as np
@@ -188,7 +189,7 @@ def getImportantFeatures(global_frequency_file, lowerbound, upperbound):
     # TODO
     data = pd.read_csv(global_frequency_file, sep=":", header=None)
     # features_list = data[(data[1] >= lowerbound) & (data[1] <= upperbound)
-    features_list = data[(data[1] >= lowerbound) & (data[1] <= upperbound) & (data[0].str.slice(0, 1).str.isupper()) ][0]
+    features_list = data[(data[1] >= lowerbound) & (data[1] <= upperbound) ][0]
     features_dict = {}
     for i, feature in enumerate(features_list):
         features_dict[feature] = i
@@ -235,19 +236,46 @@ def articlesToSparseVector(frequency_file, features_dict):
                 values.append(1)
     return titles, sparse.coo_matrix((values, (row_position, column_position)), shape=(len(data), len(features_dict)))
 
-def modelTrainedByKMeans(vectors, nb_cluster):
-    # Exercice 12
-    kmeans = KMeans(n_clusters=nb_cluster, random_state=0)
-    kmeans.fit(vectors)
-    return kmeans
-    #gmm = sklearn.mixture.GMM(n_components = nb_cluster, init_params = 'kmeans')
-    #gmm.fit(vectors.toarray())
-    #return gmm
+def train(vectors, nb_cluster, model = "KMeans"):
+    # Exercice 12, 16
+    if model == "KMeans":
+        kmeans = KMeans(n_clusters=nb_cluster, random_state=0)
+        kmeans.fit(vectors)
+        kmeans.model_name = "KMeans"
+        return kmeans
+    if model == "KMeans_Cosine":
+        kmeans = KMeans(n_clusters=nb_cluster, random_state=0)
+        vectors = preprocessing.normalize(vectors)
+        kmeans.fit(vectors)
+        kmeans.model_name = "KMeans_Cosine"
+        return kmeans
+    if model == "GMM":
+        gmm = sklearn.mixture.GMM(n_components = nb_cluster, init_params = 'kmeans')
+        gmm.fit(vectors.toarray())
+        gmm.model_name = "GMM"
+        return gmm
+    if model == "Hierarchical_Euclidean":
+        hier = AgglomerativeClustering(n_clusters = nb_cluster, affinity = "euclidean")
+        hier.model_name = "Hierarchical_Euclidean"
+        return hier 
+    if model == "Hierarchical_Mahattan":
+        hier = AgglomerativeClustering(n_clusters = nb_cluster, affinity = "l1", linkage = "complete")
+        hier.model_name = "Hierarchical_Mahattan"
+        return hier    
+    return None
 
-def predictByKMeans(model, vectors):
+def predict(predictive_model, vectors):
     # Exercise 13
-    return model.predict(vectors)
-    #return model.predict(vectors.toarray())
+    if predictive_model.model_name == "KMeans":
+        return predictive_model.predict(vectors)
+    if predictive_model.model_name == "KMeans_Cosine":
+        vectors = preprocessing.normalize(vectors)
+        return predictive_model.predict(vectors)
+    if predictive_model.model_name == "GMM":
+        return predictive_model.predict(vectors.toarray())
+    if predictive_model.model_name in ["Hierarchical_Euclidean", "Hierarchical_Mahattan"]:
+        return predictive_model.fit_predict(vectors.toarray())
+        return None
 
 def getExplicativeFeatures(global_frequency_file, frequency_file, lowerbound, upperbound, var_lower_bound):
     # Exercise 14
@@ -260,10 +288,26 @@ def getExplicativeFeatures(global_frequency_file, frequency_file, lowerbound, up
         stretch_features[k] = i
     return stretch_features
 
-def getClusterCenters(model):
+def getClusterCenters(predictive_model, vectors, prediction):
     # Exercise 14
-    return model.cluster_centers_
-    #return model.means_
+    if predictive_model.model_name == "KMeans":
+        return predictive_model.cluster_centers_ 
+    if predictive_model.model_name == "KMeans_Cosine":
+        return predictive_model.cluster_centers_ 
+    elif predictive_model.model_name == "GMM":
+        return predictive_model.means_
+    elif predictive_model.model_name == "Hierarchical_Euclidean":
+        vectors = vectors.toarray();
+        nb_clusters = max(prediction) + 1
+        centers = [ np.average([vectors[j, :] for j in range(len(vectors)) if prediction[j] == i], axis=0) for i in range(nb_clusters) ]
+        return np.array(centers)
+    elif predictive_model.model_name == "Hierarchical_Mahattan":
+        vectors = vectors.toarray();
+        nb_clusters = max(prediction) + 1
+        centers = [ np.average([vectors[j, :] for j in range(len(vectors)) if prediction[j] == i], axis=0) for i in range(nb_clusters) ]
+        return np.array(centers)
+    else:
+        return None
 
 def addArticleTitlesToCluster(titles, prediction):
     # Exercise 15
@@ -275,25 +319,10 @@ def addArticleTitlesToCluster(titles, prediction):
         clusters[prediction[i]].append(titles[i])
     return clusters
 
-def getExplicatveFeaturesForClusters(model, explicative_features):
-    centers = getClusterCenters(model)
+def getExplicatveFeaturesForEachCluster(predictive_model, vectors, prediction, explicative_features):
+    centers = getClusterCenters(predictive_model, vectors, prediction)
     nb_clusters = len(centers)
     A = []
     for i in range(nb_clusters):
         A.append(sorted(zip(explicative_features.keys(), [centers[i, explicative_features[k]] for k in explicative_features.keys()]), key = lambda x: -x[1]))
     return A
-
-"""
-def getUncategorizedData(centers, prediction, title_and_vectors):
-    min_dist = len(prediction)
-    argmin_dist = 0
-    for i, center in enumerate(centers):
-        dist = np.linalg.norm(center)
-        if dist < min_dist:
-            argmin_dist = i
-            min_dist = dist
-    print argmin_dist
-    titles =  [title_and_vectors[0][i] for i in range(len(prediction)) if prediction[i] == argmin_dist]
-    X = [title_and_vectors[1][i] for i in range(len(prediction)) if prediction[i] == argmin_dist]
-    return titles, X
-"""
