@@ -10,7 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression, Lasso
 from sklearn.metrics import mean_squared_error
-from sklearn.cross_validation import train_test_split #replaced by model_selection in sklearn 0.19+
+from sklearn.model_selection import train_test_split #replaced by model_selection in sklearn 0.19+
 from bs4 import BeautifulSoup
 import statsmodels.formula.api as sm
 from datetime import datetime
