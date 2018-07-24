@@ -9,6 +9,7 @@ import numpy as np
 import cv2
 import os
 import pandas as pd
+import matplotlib.pyplot as plt
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import LogisticRegression, Perceptron, LinearRegression
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis, QuadraticDiscriminantAnalysis
@@ -77,14 +78,14 @@ class EvaluationForm:
             self.getEdges()
         lines = cv2.HoughLinesP(self.edges, 1, np.pi/2, self.MIN_VOTE_HORIZONTAL)
         self.horizontalLines = lines[:]
-        return sorted(map(lambda x: x[1],filter(lambda x: x[1] == x[3] and x[1] > self.MARGIN_UP and x[1] < self.getHeight() - self.MARGIN_DOWN , lines[0])))
+        return sorted(list(map(lambda x: x[1], list(filter(lambda x: x[1] == x[3] and x[1] > self.MARGIN_UP and x[1] < self.getHeight() - self.MARGIN_DOWN , lines[:, 0, :])))))
     
     def getVerticalLines(self):
         if 'edges' not in self.__dict__:
             self.getEdges()
         lines = cv2.HoughLinesP(self.edges, 1, np.pi/2, self.MIN_VOTE_VERTICAL)
         self.verticalLines = lines[:]
-        return sorted(map(lambda x: x[0],filter(lambda x: x[0] == x[2] and x[0] > self.MARGIN_LEFT and x[0] < self.getWidth() - self.MARGIN_RIGHT, lines[0])))
+        return sorted(list(map(lambda x: x[0], list(filter(lambda x: x[0] == x[2] and x[0] > self.MARGIN_LEFT and x[0] < self.getWidth() - self.MARGIN_RIGHT, lines[:, 0, :])))))
     
     def getHorizontalLineGroups(self):
         edges = self.getHorizontalLines()
@@ -102,7 +103,7 @@ class EvaluationForm:
         return edge_groups
 
     def getCleanHorizontalLineGroups(self):
-        edge_groups = filter(lambda x: len(x) >= 3, self.getHorizontalLineGroups())
+        edge_groups = list(filter(lambda x: len(x) >= 3, self.getHorizontalLineGroups()))
         self.horizontalLineGroups = edge_groups
         return edge_groups
         
@@ -123,7 +124,7 @@ class EvaluationForm:
         return edge_groups
 
     def getCleanVerticalLineGroups(self):
-        edge_groups = filter(lambda x: len(x) >= 3, self.getVerticalLineGroups())
+        edge_groups = list(filter(lambda x: len(x) >= 3, self.getVerticalLineGroups()))
         self.verticalLineGroups = edge_groups
         return edge_groups
     
@@ -213,7 +214,6 @@ def MySVM():
 def MyLinearRegression():
     return LinearRegression()
 
-
 class Mark:    
     def __init__(self, X_folder=None, y_file = None):
         if X_folder == None:
@@ -221,7 +221,7 @@ class Mark:
             self.y = None
             self.names = None
             return
-        N = len(filter(lambda x: x.endswith(".jpg"), os.listdir(X_folder)))
+        N = len(list(filter(lambda x: x.endswith(".jpg"), os.listdir(X_folder))))
         self.names = [""] * N 
         X = [""] * N 
         for i, imgfile in enumerate(os.listdir(X_folder)):
@@ -274,7 +274,7 @@ class Mark:
                     S += " "
             S += "|\n"
         S += ("-" * 30)
-        print S
+        print(S)
     
     def drawAfterFiltering(self, index):
         reshape = self.getFilteredX()[index].reshape((28, 28))
@@ -288,7 +288,7 @@ class Mark:
                     S += " "
             S += "|\n"
         S += ("-" * 30)
-        print S
+        print(S)
     
     def criterion1(x, y, name, args = None):
         return sum(x) >= MIN_BLACK        
@@ -348,7 +348,7 @@ class Mark:
         y = self.getFilteredy()
         names = self.getFilteredNames()
         N = len(X)
-        X_train, X_test, y_train, y_test, names_train, names_test = X[:N/2], X[N/2:], y[:N/2], y[N/2:], names[:N/2], names[N/2:]
+        X_train, X_test, y_train, y_test, names_train, names_test = X[:N//2], X[N//2:], y[:N//2], y[N//2:], names[:N//2], names[N//2:]
         model.fit(X_train, y_train)
         y_pred = model.predict(X_test)
         for name, y1, y2 in zip(names_test, y_test, y_pred):
@@ -366,7 +366,7 @@ class Mark:
         results = np.zeros((max_mark+1, max_mark+1, len(models)))
         for i in range(0, max_mark+1):
             for j in range(i+1, max_mark+1):
-                print "Classifying %d and %d" % (i, j)
+                print("Classifying %d and %d" % (i, j))
                 for e, model in enumerate(models):
                     tts = self.getTrainTestScore(model, i, j)
                     results[i, j, e] = tts
@@ -404,3 +404,32 @@ def transformMatData(inputfile, outputfile):
         
 MODELS = [MyPerceptron, MyLDA, MyQDA, MyLogisticRegression, MyGaussianNaiveBayes, MyKNN5, MyKNN1, MySVM, MyLinearRegression]
 MODEL_NAMES = ["Perceptron", "LDA", "QDA", "LogisticRegression", "GaussianNaiveBayes", "KNN5", "KNN1", "SVM", "LinearRegression"]
+
+mnist_mark = Mark()
+mnist_mark.loadMatData(MNIST_DATA)
+
+donghanh_mark = Mark(SCORE_DATA, LABEL_DATA)
+
+group_identifier = []
+scores = []
+
+mnist_mark = Mark()
+mnist_mark.loadTransformedMatData(MNIST_DATA_TRANSFORMED)
+
+donghanh_mark = Mark(SCORE_DATA, LABEL_DATA)
+
+group_identifier = []
+scores = []
+
+for i in range(10):
+    for j in range(i+1, 10):
+        print(i, " and ", j)
+        group_identifier.append("%d vs %d" % (i, j))
+        mnist_mark.filterData(criterion = "FilterByQualityAndScore", args = [i, j])
+        donghanh_mark.filterData(criterion = "FilterByQualityAndScore", args = [i, j])
+        model = MyLogisticRegression().fit(mnist_mark.getFilteredX(), mnist_mark.getFilteredy())
+        score =  model.score(donghanh_mark.getFilteredX(), donghanh_mark.getFilteredy())
+        scores.append(score)
+
+data = pd.DataFrame(scores, index = group_identifier, columns = ["LogisticRegression"])
+print(data)
