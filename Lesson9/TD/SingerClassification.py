@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 """
+Created on Tue Aug 21 14:18:43 2018
+
+@author: ndoannguyen
+"""
+
+# -*- coding: utf-8 -*-
+"""
 Created on Thu Aug  9 11:21:00 2018
 
 @author: ndoannguyen
@@ -21,73 +28,29 @@ def prepareImageFolder(raw_image_folder, image_folder):
         - Create image_folder if not exists
         - Scan raw_image_folder and copy all images from {Singer}/{Image} to image_folder
         - Rename the file like "BaoThy_0.png"
+        TODO
     """
-    if not os.path.isdir(image_folder):
-        os.mkdir(image_folder)
-    for singer_folder in os.listdir(raw_image_folder):
-        for i, image_file in enumerate(os.listdir("%s/%s" % (raw_image_folder, singer_folder))):
-            copyfile("%s/%s/%s" % (raw_image_folder, singer_folder, image_file), 
-                            "%s/%s_%d%s" % (image_folder, SINGER_NAME_DICTIONARY[singer_folder], i, EXTENSION))
-    return
-
-def areTwoEyesHorizontal(left_eye_position, right_eye_position):
-    return abs(left_eye_position[1][1] + left_eye_position[1][3]/2 - right_eye_position[1][1] - right_eye_position[1][3]/2 ) <= HORIZONTAL_CHECK
-    
-def transformImagesToEyesTable(source_folder, destination_folder, destination_data_file, index_list):
-    """
-        Exercise 8
-        - Initialize the DataSet
-        - Mkdir if not exists
-    """
-    if not os.path.isdir(destination_folder):
-        os.mkdir(destination_folder)
-    data_file = open(destination_data_file, 'w')
-    file_list = os.listdir(source_folder)
-    count = 0
-    for index in index_list:
-        image_file = file_list[index]
-        face = Face("%s/%s" % (source_folder, image_file))
-        if len(face.eye_positions) == 2 and areTwoEyesHorizontal(face.eye_positions[0], face.eye_positions[1]):
-            data_file.write(",".join(face.normalized_eyes[0].flatten().astype("str")))
-            data_file.write(",")
-            data_file.write(",".join(face.normalized_eyes[1].flatten().astype("str")))
-            data_file.write(",")
-            singer_name = face.image_name[: face.image_name.find("_")]
-            data_file.write(str(SINGER_INDEX_DICTIONARY[singer_name]))
-            data_file.write(",")
-            data_file.write(face.image_name)
-            data_file.write("\n")
-        count += 1
-        if (count % 10 == 0):
-            print("%d files processed." % count)
-    data_file.close()
+    pass
 
 def transformImagesToFacesTable(source_folder, destination_folder, destination_data_file, index_list):
     """
-        Exercise 9
-        - Initialize the DataSet
-        - Mkdir if not exists
+        Exercise 8
+        - Read images of index_list in source_folder
+        - Check if face recognized
+        - Store as a table in a csv file in destination_folder
+        TODO
     """
-    if not os.path.isdir(destination_folder):
-        os.mkdir(destination_folder)
-    data_file = open(destination_data_file, 'w')
-    file_list = os.listdir(source_folder)
-    count = 0
-    for index in index_list:
-        image_file = file_list[index]
-        face = Face("%s/%s" % (source_folder, image_file))
-        if len(face.normalized_faces) >= 1:
-            data_file.write(",".join(face.normalized_faces[0].flatten().astype("str")))
-            data_file.write(",")
-            singer_name = face.image_name[: face.image_name.find("_")]
-            data_file.write(str(SINGER_INDEX_DICTIONARY[singer_name]))
-            data_file.write(",")
-            data_file.write(face.image_name)
-            data_file.write("\n")
-        count += 1
-        if (count % 10 == 0):
-            print("%d files processed." % count)
-    data_file.close()
+    pass  
+    
+def transformImagesToEyesTable(source_folder, destination_folder, destination_data_file, index_list):
+    """
+        Exercise 9
+        - Read images of index_list in source_folder
+        - Check if 2 eyes are valid
+        - Store as a table in a csv file in destination_folder
+        TODO
+    """
+    pass
 
 class Face:
     """
@@ -98,10 +61,10 @@ class Face:
         - gray_image: numpy array representing the gray image
         - face_positions: list of (x, y, w, h) representing the position of the face
         - faces: list of array representing the face (should be of length 1 in this TD)
+        - normalized_faces: resize to 64 x 64
+        - eye_positions: list of (i, (x, y, w, h)) representing the position of the eyes
+        - eyes: list of array representing the eyes 
         - normalized_faces: resize to 32 x 32
-        
-        ClassAttribute
-        - cascade_path: the cascade_path
     """
     EXTENSION = EXTENSION
     HAARCASCADE_FRONTALFACE = HAARCASCADE_FRONTALFACE_DEFAULT
@@ -121,104 +84,31 @@ class Face:
         """
             Exercise 2 + 5
             - Initialize the image
+            TODO
         """
-        self.image_path = image_path
-        filename_position = image_path.rfind("/") + 1
-
-        self.image_name = image_path[filename_position:].replace(Face.EXTENSION, "")
-        self.image = cv2.imread(image_path)
-        self.gray_image = cv2.imread(image_path, 0)
-        # Exercise 5
-        self.normalized_faces = []
-        self.normalizeFaces()
-        self.normalized_eyes = []
-        self.normalizeEyes()
-        
+        pass
+    
     def draw(self, mode = "full", index = 0):
         """
-            Exercise 3 + 4
-            - Show an image: https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_gui/py_image_display/py_image_display.html
-            - mode is "full" or "face"
+            Exercise 3 + 4 + 5 + 6 + 7
+            - Show image of the face/eyes by matplotlib
+            TODO
         """
-        
-        # Exercise 3
-        if mode == "full_color":
-            plt.imshow(self.image, cmap = 'hsv')
-            return
-        if mode == "full_gray":
-            plt.imshow(self.gray_image, cmap = 'gray')
-            return
-        # Exercise 4
-        if mode == "face":
-            if not hasattr(self, "faces"):
-                self.detectFaces()
-            if index >= len(self.faces):
-                print("There are only %d face(s) in the image" % len(self.faces))
-                return
-            plt.imshow(self.faces[index], cmap = 'gray')
-        # Exercise 4
-        if mode == "face_marked":
-            if not hasattr(self, "face_positions"):
-                self.detectFaces()
-            img = self.image
-            if index >= len(self.face_positions):
-                print("There are only %d face(s) in the image" % len(self.face_positions))
-                return
-            x, y, w, h = self.face_positions[index]
-            cv2.rectangle(img, (x, y), (x+w, y+h), Face.COLOR_RED, 1)
-            plt.imshow(img, cmap = 'hsv')
-        # Exercise 5
-        if mode == "normalized_face":
-            if not hasattr(self, "normalized_faces"):
-                self.normalizeFaces()
-            if index >= len(self.faces):
-                print("There are only %d face(s) in the image" % len(self.normalized_faces))
-                return
-            plt.imshow(self.normalized_faces[index], cmap = 'gray')  
-        # Exercise 6
-        if mode == "eye":
-            if not hasattr(self, "eyes"):
-                self.detectEyes()
-            if index >= len(self.eyes):
-                print("There are only %d eye(s) in the image" % len(self.eyes))
-                return
-            plt.imshow(self.eyes[index][1], cmap = 'gray')
-        if mode == "eye_marked":
-            if not hasattr(self, "eyes"):
-                self.detectEyes()
-            if index >= len(self.eyes):
-                print("There are only %d eye(s) in the image" % len(self.eyes))
-                return
-            i = self.eye_positions[index][0]
-            img = self.faces[i]
-            x, y, w, h = self.eye_positions[index][1]
-            cv2.rectangle(img, (x, y), (x+w, y+h), Face.COLOR_RED, 1)
-            plt.imshow(img, cmap = 'hsv')
-        # Exercise 6
-        if mode == "normalized_eye":
-            if not hasattr(self, "normalized_eyes"):
-                self.normalizeEyes()
-            if index >= len(self.normalized_eyes):
-                print("There are only %d eye(s) in the image" % len(self.normalized_eyes))
-                return
-            plt.imshow(self.normalized_eyes[index], cmap = 'gray')  
+        pass
     
     def detectFaces(self):
         """
             Exercise 4
             - Get positions of the face and assign it to self.face_positions
             - https://docs.opencv.org/2.4/modules/objdetect/doc/cascade_classification.html#cascadeclassifier-detectmultiscale
+            TODO
         """
-        faceCascade = cv2.CascadeClassifier(Face.HAARCASCADE_FRONTALFACE)
-        self.face_positions = faceCascade.detectMultiScale(self.gray_image, scaleFactor = Face.HAAR_SCALE_FACTOR, minNeighbors = Face.HAAR_MIN_NEIGHBORS, minSize = Face.HAAR_MIN_SIZE)
-        self.faces = []
-        for (x, y, w, h) in self.face_positions:
-            self.faces.append(self.gray_image[y: y + h, x : x + w])
+        pass
     
     def normalizeFaces(self):
         """
             Exercise 5
-            - Detect the face and normalize it to 32 x 32
+            - Detect the face and normalize it to 64 x 64
         """
         if not hasattr(self, "faces"):
             self.detectFaces()
@@ -229,38 +119,25 @@ class Face:
     def detectEyes(self):
         """
             Exercise 6
-            - Detect the eye
+            - Detect the eyes
+            - https://docs.opencv.org/2.4/modules/objdetect/doc/cascade_classification.html#cascadeclassifier-detectmultiscale
         """
-        if not hasattr(self, "faces"):
-            self.detectFaces()
-        self.eyes = []
-        self.eye_positions = []
-        eyeCascade = cv2.CascadeClassifier(Face.HAARCASCADE_EYE)
-        if len(self.faces) > 0:
-            for i, img in enumerate(self.faces):
-                eyes = eyeCascade.detectMultiScale(img)
-                for e in eyes:
-                    self.eye_positions += [(i, e)]
-        for (i, (x, y, w, h)) in self.eye_positions:
-            self.eyes.append((i, self.faces[i][y : y + h, x : x + h]))
+        pass
 
     def normalizeEyes(self):
         """
             Exercise 7
             - Detect the eyes and normalize it to 32 x 32
+            TODO
         """
-        if not hasattr(self, "eyes"):
-            self.detectEyes()
-        if len(self.eyes) > 0:
-            for (i, img) in self.eyes:
-                self.normalized_eyes.append(cv2.resize(img, (Face.EYE_NORMALIZED_SIZE, Face.EYE_NORMALIZED_SIZE), interpolation = cv2.INTER_LINEAR))
+        pass
         
 class DataSet:
     """
         Attributes:
-        - X
-        - y
-        - names
+        - X: The vectors (4096 or 2048 or lower dimensions)
+        - y: The target (indices of singers)
+        - names: The image's names
     """
     
     HORIZONTAL_CHECK = 3
@@ -272,50 +149,56 @@ class DataSet:
     def __init__(self, data_file, selected_columns = None):
         """
             Exercise 10
+            - Initialize the data set by construct the attributes X, y, names
+            TODO
         """
-        raw_data = pd.read_csv(data_file, sep = ",", header = None)
-        if selected_columns == None:
-            self.X = raw_data.iloc[:, :-2].values
-        else:
-            self.X = raw_data.iloc[:, selected_columns].values
-        self.y = raw_data.iloc[:,-2:-1].T.values[0]
-        self.names = raw_data.iloc[:,-1:].T.values[0]
+        pass
     
     def trainTestSplit(self, test_size = 0.5):
         """
             Exercise 11
+            - Split X, y, names to training and test parts
+            TODO
         """
-        self.X_train, self.X_test, self.y_train, self.y_test, self.names_train, self.names_test = train_test_split(self.X, self.y, self.names, test_size = 0.5, random_state = 0)
+        pass
                 
     def train(self, model):
         """
             Exercise 12
+            - Train the initial model by the training set and return the model
+            TODO
         """
-        model.fit(self.X_train, self.y_train)
-        return model
+        pass
     
     def predict(self, model):
         """
             Exercise 13
+            - Predict with the trained model
+            TODO
         """
-        return model.predict(self.X_test)
+        pass
         
     def score(self, model):
         """
             Exercise 14
+            - Get the accuracy by the model on the test set
+            TODO
         """
-        model.fit(self.X_train, self.y_train)
-        return model.score(self.X_test, self.y_test)
+        pass
     
     def getConfusionMatrix(self, model):
         """
             Exercise 14
+            - Get the confusion matrix on the test set
+            TODO
         """
-        return confusion_matrix(self.y_test, self.predict(model))
+        pass
     
     def getSignificantFeatures(self, model, seuil = SEUIL):
         """
             Exercise 15
+            - Get the most important features by
+            TODO
         """
-        return [i for i in range(len(model.coef_[0])) if sum([abs(model.coef_[j,i]) for j in range(len(model.coef_))]) > seuil]
+        pass
     

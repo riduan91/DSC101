@@ -22,6 +22,8 @@ HAARCASCADE_EYE_DEFAULT = "Configuration/haarcascade_eye.xml"
 # Khuôn mặt được xem là có tư thế trực diện nếu tâm mắt trái và tâm mắt phải có tung độ không cách nhau quá 3 pixel
 HORIZONTAL_CHECK = 3
 
+VERTICAL_CHECK = 10
+
 # File text lưu trích xuất khuôn mặt, đôi mắt dưới dạng vector số, output của phần 1
 FACES_DATA = "TextData/Faces.csv"
 EYES_DATA = "TextData/Eyes.csv"

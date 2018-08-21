@@ -30,14 +30,12 @@ def prepareImageFolder(raw_image_folder, image_folder):
                             "%s/%s_%d%s" % (image_folder, SINGER_NAME_DICTIONARY[singer_folder], i, EXTENSION))
     return
 
-def areTwoEyesHorizontal(left_eye_position, right_eye_position):
-    return abs(left_eye_position[1][1] + left_eye_position[1][3]/2 - right_eye_position[1][1] - right_eye_position[1][3]/2 ) <= HORIZONTAL_CHECK
+def areTwoValidEyes(left_eye_position, right_eye_position):
+    return abs(left_eye_position[1][1] + left_eye_position[1][3]/2 - right_eye_position[1][1] - right_eye_position[1][3]/2 ) <= HORIZONTAL_CHECK and abs(left_eye_position[1][0] + left_eye_position[1][2]/2 - right_eye_position[1][0] - right_eye_position[1][2]/2 ) >= VERTICAL_CHECK
     
 def transformImagesToEyesTable(source_folder, destination_folder, destination_data_file, index_list):
     """
         Exercise 9
-        - Initialize the DataSet
-        - Mkdir if not exists
     """
     if not os.path.isdir(destination_folder):
         os.mkdir(destination_folder)
@@ -47,7 +45,7 @@ def transformImagesToEyesTable(source_folder, destination_folder, destination_da
     for index in index_list:
         image_file = file_list[index]
         face = Face("%s/%s" % (source_folder, image_file))
-        if len(face.eye_positions) == 2 and areTwoEyesHorizontal(face.eye_positions[0], face.eye_positions[1]):
+        if len(face.eye_positions) >= 2 and areTwoValidEyes(face.eye_positions[0], face.eye_positions[-1]):
             data_file.write(",".join(face.normalized_eyes[0].flatten().astype("str")))
             data_file.write(",")
             data_file.write(",".join(face.normalized_eyes[1].flatten().astype("str")))
@@ -64,9 +62,7 @@ def transformImagesToEyesTable(source_folder, destination_folder, destination_da
 
 def transformImagesToFacesTable(source_folder, destination_folder, destination_data_file, index_list):
     """
-        Exercise 9
-        - Initialize the DataSet
-        - Mkdir if not exists
+        Exercise 8
     """
     if not os.path.isdir(destination_folder):
         os.mkdir(destination_folder)
