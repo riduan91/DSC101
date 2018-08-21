@@ -254,8 +254,8 @@ class Face:
 class DataSet:
     """
         Attributes:
-        - X
-        - y
+        - X: vectors
+        - y: targets
         - names
     """
     
@@ -313,5 +313,5 @@ class DataSet:
         """
             Exercise 15
         """
-        return [i for i in range(len(model.coef_[0])) if sum([abs(model.coef_[j,i]) for j in range(len(model.coef_))]) > seuil]
+        return [i for i in range(len(model.coef_[0])) if sum([abs(model.coef_[j,i]/model.intercept_[j]) for j in range(len(model.coef_))]) > seuil]
     
