@@ -35,7 +35,7 @@ def areTwoEyesHorizontal(left_eye_position, right_eye_position):
     
 def transformImagesToEyesTable(source_folder, destination_folder, destination_data_file, index_list):
     """
-        Exercise 8
+        Exercise 9
         - Initialize the DataSet
         - Mkdir if not exists
     """

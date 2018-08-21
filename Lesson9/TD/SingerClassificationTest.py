@@ -11,9 +11,11 @@ from itertools import chain
 from sklearn.svm import SVC
 from sklearn.metrics import confusion_matrix, roc_auc_score
 
+"""
 #TEST 1
 prepareImageFolder(RAW_IMAGE_FOLDER, IMAGE_FOLDER)
 z = os.listdir(IMAGE_FOLDER)
+"""
 
 """
 #TEST 2
@@ -65,7 +67,6 @@ singers = ["DamVinhHung", "DanTruong", "LamTruong", "NooPhuocThinh"]
 transformImagesToEyesTable(IMAGE_FOLDER, TEXT_DATA_FOLDER, EYES_DATA, chain.from_iterable([SINGER_IMAGE_RANGE[s] for s in singers]))
 """
 
-"""
 data_set = DataSet(FACES_DATA)
 X = data_set.X
 y = data_set.y
@@ -77,9 +78,9 @@ confusion_matrix = data_set.getConfusionMatrix(model)
 #prediction = data_set.predict(model)
 coefs = model.coef_
 significant_features = data_set.getSignificantFeatures(model, seuil = 0.0005)
+
+
 """
-
-
 data_set = DataSet(FACES_DATA, selected_columns = significant_features)
 X = data_set.X
 y = data_set.y
@@ -88,7 +89,7 @@ data_set.trainTestSplit()
 model = SVC(kernel = 'linear', decision_function_shape='ovr', C=1)
 score = data_set.score(model)
 confusion_matrix = data_set.getConfusionMatrix(model)
-
+"""
 
 """
 SPLIT = 60
