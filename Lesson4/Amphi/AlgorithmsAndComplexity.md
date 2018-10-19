@@ -829,7 +829,7 @@ The same is true for **pop**.
 | **data.append(val)**                  | $O(1)$ (in average)     |
 | **data.insert(k, value)**             | $O(n - k)$ (in average) |
 | **data.pop()**                        | $O(1)$ (in average)     |
-| **data.pop(k)**                       | $O(k)$ (in average)     |
+| **data.pop(k)**                       | $O(n - k)$ (in average) |
 | **data.remove(value)**                | $O(n)$ (in average)     |
 | **data.extend(data2)**                | $O(n_2)$ (in average)   |
 | **data.reverse()**                    | $O(n)$                  |
@@ -900,7 +900,7 @@ We have described hash maps and known that **dict** in Python implements hash ma
 | Intersection **s&t**                 | $O(min(len(s), len(t))$ | $O(len(s) * len(t))$ |
 | Difference **s-t**                   | $O(len(s))$             | $O(len(s) * len(t))$ |
 | **s.difference_update(t)**           | $O(len(t))$             | $O(len(s) * len(t))$ |
-| Symmetric Difference **s^t**         | $O(len(s))$             | $O(len(s) * len(t))$ |
+| Symmetric Difference **s^t**         | $O(len(s)+len(t))$      | $O(len(s) * len(t))$ |
 | **s.symmetric_difference_update(t)** | $O(len(t))$             | $O(len(t) * len(s))$ |
 | Subset **s <= t**                    | $O(len(s))$             | $O(len(t) * len(s))$ |
 | Add                                  | $O(1)$                  | $O(n)$               |
@@ -1064,9 +1064,9 @@ txt[i] and pat[j] match, do i++ and j++
 
 | **Python's class** | **Abstract data type**                      | **Frequent operations and complexity** |
 |--------------------|---------------------------------------------|----------------------------------------|
-| tuple              | Fixed-size Array Referential Array          | 5.4                                    |
-| list               | Dynamic Array Referential Array             | 5.4                                    |
-| str                | Fixed-size Array Compact Array              | 5.9                                    |
+| tuple              | Fixed-length Array/ Referential Array       | 5.4                                    |
+| list               | Dynamic Array/ Referential Array            | 5.4                                    |
+| str                | Fixed-length Array/ Compact Array           | 5.9                                    |
 | dict               | Hash Map with Dynamic, Referential Array    | 5.6                                    |
 | set                | Hash Map with Dynamic, Referential Array    | 5.7                                    |
 | frozenset          | Hash Map with Fixed-size, Referential Array | 5.7                                    |
@@ -1164,16 +1164,435 @@ To perform a sort on $A$, we can:
 
 In Python, we can use a list to implement a heap. Childrens of element of index **i** are of index **2i** and **2i+1**. Therefore, getting elements and perform interchanges between parents and children can be done in $O(1)$, which guarantees Heap-sort to be $O(N \log N)$.
 
-# 7. Parallel Processing with Pool in Python
+# 7. Some Other Topics
+
+## 7.1 Multiprocessing with Pool
+
+The **Pool** class offers a way to parallelize the execution of a function across multiple input values, distributing the input data across processes (data parallelism). 
+
+You must call a **Pool** object from the main function, i.e. (**if __name == '__main__':**)
 
 
 ```python
+from multiprocessing import Pool
 
+def f(x):
+    return x*x
+
+if __name__ == '__main__':
+    p = Pool(5)
+    print(p.map(f, range(1000)))
 ```
+
+## 7.2 Copy
+
+For mutable objects, a statement **A=B** will refer **B** to **A**. Hence, any further change of **A** will also impact **B**.
+
+
+```python
+A = [1, 2, 3, 4]
+B = A
+B.append(5)
+print(A)
+print(B)
+```
+
+    [1, 2, 3, 4, 5]
+    [1, 2, 3, 4, 5]
+    
+
+To make a new object whose elements look exactly like **A**, but not referring to **A**, we can copy it using **copy** module.
+
+
+```python
+import copy
+A = [1, 2, 3, 4]
+B = copy.copy(A)
+B.append(5)
+print(A)
+print(B)
+```
+
+    [1, 2, 3, 4]
+    [1, 2, 3, 4, 5]
+    
+
+This can also be done for instances of some user-defined class
+
+
+```python
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def __str__(self):
+        return "Point(%f, %f)" % (self.x, self.y)
+    
+A = Point(1, 2)
+B = copy.copy(A)
+A.x = 5
+print(A)
+print(B)
+```
+
+    Point(5.000000, 2.000000)
+    Point(1.000000, 2.000000)
+    
+
+**Attention**:
+- A shallow copy (**copy**) constructs a new compound object and then (to the extent possible) inserts references into it to the objects found in the original.
+- A deep copy (**deepcopy**) constructs a new compound object and then, recursively, inserts copies into it of the objects found in the original.
+
+
+```python
+class Point:
+    def __init__(self, coordinates):
+        self.coordinates = coordinates
+
+    def __str__(self):
+        return "Point(%f, %f)" % (self.coordinates[0], self.coordinates[1])
+
+print("Shallow copy")
+A = Point([1, 2])
+B = copy.copy(A)
+#A.coordinates = [3, 4]
+A.coordinates[0] = 3
+print(A)
+print(B)
+
+print("Deep copy")
+A = Point([1, 2])
+B = copy.deepcopy(A)
+A.coordinates[0] = 3
+print(A)
+print(B)
+```
+
+    Shallow copy
+    Point(3.000000, 2.000000)
+    Point(3.000000, 2.000000)
+    Deep copy
+    Point(3.000000, 2.000000)
+    Point(1.000000, 2.000000)
+    
 
 # 8. Regular Expressions
 
-# 9. pandas (cont'd)
+A regular expression is a special sequence of characters that helps us match or find some pattern in a string.
+
+In Python, the module **re** provides support for regular expressions.
+
+An example:
+
+**Check whether a string matches some format**
+
+
+```python
+import re
+```
+
+
+```python
+s1 = "112333445"
+s2 = "a112bc"
+print(re.match(r'[0-9]+$', s1))
+print(re.match(r'[0-9]+$', s2))
+```
+
+    <_sre.SRE_Match object at 0x00000000040E71D0>
+    None
+    
+
+Here a string begins with **r** is a raw string. It is printed in the raw form if the **print** function is called.
+
+
+```python
+print(r'A\tB\tC')
+print('A\tB\tC')
+```
+
+    A\tB\tC
+    A	B	C
+    
+
+**r'[0-9]'** means a regular expression containing a sequence of digits (0 to 9). The results show that the strings **s1** matches this format while **s2** and **s3** do not.
+
+## 8.1 Regular Expression Patterns
+
+
+```python
+s = "A     B"
+import re
+#re.match(s1, s2)
+#re.search(s1, s2)
+#re.sub(s1, s2, s)
+#re.match("^P" , "Python")
+
+A = re.sub("[^\w\s]", "", "One   two three 4 _- ? A ! :+-*:")
+A = re.sub("\s+", " ", A)
+print(A)
+```
+
+    One two three 4 _ A 
+    
+
+| Pattern                         | Description                                                                  |
+|---------------------------------|------------------------------------------------------------------------------|
+| **^**                           | Matches the beginning of line                                                |
+| **()**                          | Group an expression                                                          |
+| **$**                           | Matches end of line                                                          |
+| **.**                           | Matches any single character except newlinem (\n).                           |
+| **[abc]**                       | Matches single character in brackets: **a**, **b** or **c**                  |
+| **[^abc]**                      | Matches single character not in brackets: not **a**, not **b** and not **c** |
+| **a+**                          | Matches 1 or more occurence of **a**                                         |
+| **a\* **                        | Matches 0 or more occurence of **a**                                         |
+| **a?**                          | Matches 0 or 1 occurence of **a**                                            |
+| **a{n}**                        | Matches exactly **n** occurences of **a**                                    |
+| **a{n,}**                       | Matches **n** or more occurences of **a**                                    |
+| **a{n,m}**                      | Matches at least **n** and at most **m** occurences of **a**                 |
+| **a&#124;b**                    | Matches either **a** or **b**                                                |
+| **(*some regular expression*)** | Group a sub-expression                                                       |
+| **\w**                          | Matches word characters (letters, numbers plus underscore (_))               |
+| **\W**                          | Matches nonword characters                                                   |
+| **\s**                          | Matches whitespace: space, tab, newline, endline or endfile                  |
+| **\S**                          | Matches non whitespace                                                       |
+| **\d**                          | Matches digits                                                               |
+| **\D**                          | Matches nondigits                                                            |
+
+Examples: What do the following commands do?
+
+
+```python
+re.match(r"python", "python"), re.match(r"python", "python."), re.match(r"python", "apython")
+```
+
+
+
+
+    (<_sre.SRE_Match at 0x3de5780>, <_sre.SRE_Match at 0x3de56b0>, None)
+
+
+
+
+```python
+re.match(r"[Pp]ython", "Python"), re.match(r"[Pp]ython", "python2.7"), re.match(r"[Pp]ython$", "python2.7")
+```
+
+
+
+
+    (<_sre.SRE_Match at 0x3de58b8>, <_sre.SRE_Match at 0x3de57e8>, None)
+
+
+
+
+```python
+re.match(r".ython", "Python"), re.match(r".ython", "\tython"), re.match(r".ython", "\nython")
+```
+
+
+
+
+    (<_sre.SRE_Match at 0x3de5d30>, <_sre.SRE_Match at 0x3de5c60>, None)
+
+
+
+
+```python
+re.match(r"[^ABC]", "Bython"), re.match(r"[^ABC]", "Python")
+```
+
+
+
+
+    (None, <_sre.SRE_Match at 0x3de5e68>)
+
+
+
+
+```python
+re.match(r".*ython", "Python"), re.match(r"P.+thon", "Python"), re.match(r"Py.?thon", "Python"), re.match(r"Py.+thon", "Python"),
+```
+
+
+
+
+    (<_sre.SRE_Match at 0x3de5f38>,
+     <_sre.SRE_Match at 0x3de5e00>,
+     <_sre.SRE_Match at 0x3df0030>,
+     None)
+
+
+
+
+```python
+re.match(r".{3}hon", "Python"), re.match(r".{3}on", "Python"), re.match(r".{3,}on", "Python"), re.match(r"P{1,4}.{1,3}hon", "Python")
+```
+
+
+
+
+    (<_sre.SRE_Match at 0x3df0098>,
+     None,
+     <_sre.SRE_Match at 0x3df01d0>,
+     <_sre.SRE_Match at 0x3df0168>)
+
+
+
+
+```python
+re.match(r"(Q|Py)thon", "Qthon"), re.match(r"(P|Py)thon", "Python")
+```
+
+
+
+
+    (<_sre.SRE_Match at 0x3d5a738>, <_sre.SRE_Match at 0x3d5a7b0>)
+
+
+
+
+```python
+re.match(".+\d$", "A73"), re.match(".+\d$", "73A"), re.match("\w+\d$", "A73")
+```
+
+
+
+
+    (<_sre.SRE_Match at 0x3df0850>, None, <_sre.SRE_Match at 0x3df0718>)
+
+
+
+
+```python
+re.match("\s", "\t\t\t"), re.match("\s", " A\n"), re.match("\s", "A\n")
+```
+
+
+
+
+    (<_sre.SRE_Match at 0x3df0a58>, <_sre.SRE_Match at 0x3df0d30>, None)
+
+
+
+## 8.2 Some methods
+
+- **match** checks for a match only at the beginning of the string
+- **search** checks for a match anywhere in the string
+
+
+```python
+s1 = "112333445"
+s2 = "a112bc"
+print(re.match(r'[0-9]', s1))
+print(re.match(r'[0-9]', s2))
+```
+
+    <_sre.SRE_Match object at 0x0000000003DF0F38>
+    None
+    
+
+
+```python
+s1 = "112333445"
+s2 = "a112bc"
+print(re.search(r'[0-9]', s1))
+print(re.search(r'[0-9]', s2))
+```
+
+    <_sre.SRE_Match object at 0x0000000003DD7030>
+    <_sre.SRE_Match object at 0x0000000003DD7030>
+    
+
+Both methods return an SRE_Match instance, which provide a method **group** for the first maximized matching pattern.
+
+
+```python
+s1 = "A112333445A223345S"
+print(re.search(r'[0-9]+', s1).group())
+```
+
+    112333445
+    
+
+- **findall(pattern, string)** returns a list of maximized, non-overlapping matching strings.
+
+
+```python
+s1 = "A112333445A223345S"
+re.findall(r'[0-9]+', s1)
+```
+
+
+
+
+    ['112333445', '223345']
+
+
+
+
+```python
+s1 = "A112333445A223345S"
+re.findall(r'3{2}.', s1)
+```
+
+
+
+
+    ['333', '334']
+
+
+
+
+```python
+s1 = "A112333445A223345S"
+result = re.finditer(r'3{2}.', s1)
+[(m.start(0), m.end(0)) for m in result]
+```
+
+
+
+
+    [(4, 7), (13, 16)]
+
+
+
+- **sub(pattern, repl, string, max=0)** is used to replace patterns in string.
+
+
+```python
+s1 = "A112333445A223345S"
+re.sub(r'\d+', '', s1)
+```
+
+
+
+
+    'AAS'
+
+
+
+
+```python
+s1 = "A112333445A223345S"
+re.sub(r'\d+', '', s1, 1)
+```
+
+
+
+
+    'AA223345S'
+
+
+
+# 9. Quiz
+
+This is the last (official) amphi on Python programming. Some additional topics will be handled as small parts of the following lectures.
+
+To mark this end, please try a quiz http://www.mypythonquiz.com/question.php ([6]) to test your Python knowledge.
+
+(Some subjects as in questions 16, 17, 25, 29, 33, 59, 60, 61, 62, 68 have not been discussed in our course.)
 
 ## References
 
@@ -1184,3 +1603,9 @@ In Python, we can use a list to implement a heap. Childrens of element of index 
 [3] Michael T. Goodrich, Roberto Tamassia, Michael H. Goldwasser, *Data Structures and Algorithms in Python*
 
 [4] https://www.geeksforgeeks.org/searching-for-patterns-set-2-kmp-algorithm/
+
+[5] https://www.tutorialspoint.com/python/python_reg_expressions.htm
+
+[6] http://www.mypythonquiz.com/question.php
+
+[7] https://docs.python.org/
