@@ -70,7 +70,7 @@ def answer_2(questions_dictionary, question_content):
     
 def searchQuestionsContainingWord(questions_list, keyword):
     """    
-        Exercise 6
+        Exercise Vinh
     """
     #TODO
     
